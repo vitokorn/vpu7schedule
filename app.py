@@ -500,11 +500,11 @@ def sync():
         req3 = http.request(method='POST', url='http://schedule.in.ua:3200/lessons/query', body=nd,
                             headers={'X-Institution': 'vische-profesiine-uchilische-7'})
         res3 = orjson.loads(req3.data)
+        print(g.name)
+        print(len(res3))
         for d in res3:
-            da = d['date']
-            print(f'504 {da}')
             parseddate = datetime.strptime(d['date'], '%Y-%m-%dT%H:%M:%S.%fZ')
-            print(f'506 {parseddate}')
+            # print(f'506 {parseddate}')
             if d['room'] and d['room']['name']:
                 room = d['room']['name']
             else:
