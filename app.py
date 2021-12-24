@@ -96,7 +96,13 @@ def process_group_step(message):
         st = Student.query.filter_by(tid=message.from_user.id).first()
         if st is None:
             group = Group.query.filter_by(name=message.text).first()
-            get_or_create(db.session,Student,tid=message.from_user.id,defaults={'language_code':message.from_user.language_code,'group':group.id})
+            get_or_create(db.session,Student,tid=message.from_user.id,defaults={'first_name':message.from_user.first_name,'username':message.from_user.username,'language_code':message.from_user.language_code,'group':group.id})
+        else:
+            group = Group.query.filter_by(name=message.text).first()
+            st.group = group.id
+            st.first_name = message.from_user.first_name
+            st.username = message.from_user.username
+            db.session.commit()
         if message.from_user.language_code == "uk":
             bot.reply_to(message, 'Група обрана')
         elif message.from_user.language_code == "ru":
@@ -149,7 +155,9 @@ def sync():
                             headers={'X-Institution': 'vische-profesiine-uchilische-7'})
         res3 = orjson.loads(req3.data)
         for d in res3:
-            lessons, create = get_or_create(db.session, Lessons, room=d['room']['name'], subject=d['subject']['name'],teacher=d['teacher']['name'],date=d['date'],group=d['group']['name'],lorder=d['order'])
+            print(d)
+            parseddate = datetime.strptime(d['date'], '%Y-%m-%dT%H:%M:%S.%fZ')
+            lessons, create = get_or_create(db.session, Lessons, room=d['room']['name'], subject=d['subject']['name'],teacher=d['teacher']['name'],date=parseddate,group=d['group']['name'],lorder=d['order'])
 
 
 def get_or_create(session, model, defaults=None, **kwargs):
