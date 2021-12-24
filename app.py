@@ -246,7 +246,7 @@ def calls(message):
             elif order == 9:
                 start = ninth_start
                 end = ninth_end
-            text = f'{order}Пара {start} {end}'
+            text = f'{order} Пара {start} {end}'
             less.append(text)
         if message.from_user.language_code == "uk":
             bot.reply_to(message, '\n'.join(less))
@@ -258,9 +258,15 @@ def calls(message):
         print(traceback.format_exc())
 
 
+@bot.message_handler(commands=['help'])
+def help(message):
+    msg = f'Команды: /today, /tomorrow, /next_three_day, /week, /nextweek, предназначены для получения расписания на определенное к-во дней. Имеют две формы:\n 1. Исходная (/today) – предназначена для получения расписания пользователю, который был ранее зарегистрирован.\n2. Дополненная (/today КИ-14-1) – предназначена для получения расписания для произвольной группы (не требует регистрацию).\nДля регистрации необходимо ввести команду /set и в следующем сообщении указать свою группу.\n'
+    bot.send_message(message.chat.id, msg)
+
 # @bot.message_handler(func=lambda message: True, content_types=['text'])
 # def echo_message(message):
 #     bot.reply_to(message, message.text)
+
 
 def process_group_step(message):
     try:
