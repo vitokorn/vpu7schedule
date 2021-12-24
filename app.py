@@ -11,7 +11,7 @@ import telebot
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config[
-    'SQLALCHEMY_DATABASE_URI'] = ''
+    'SQLALCHEMY_DATABASE_URI'] = os.environ.get('db')
 app.jinja_env.auto_reload = True
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -45,7 +45,11 @@ class Student(db.Model):
     username = db.Column(db.String)
     last_name = db.Column(db.String)
     language_code = db.Column(db.String)
-    group = db.ForeignKey(Group)
+    group = db.Column(
+        db.Integer,
+        db.ForeignKey("group.id", ondelete="CASCADE"),
+        nullable=False
+    )
 
 
 @bot.message_handler(commands=['start'])
@@ -59,7 +63,7 @@ def echo_message(message):
     bot.reply_to(message, message.text)
 
 
-@app.route('/' + TOKEN, methods=['POST'])
+@app.route('/' + str(TOKEN), methods=['POST'])
 def getMessage():
     json_string = request.get_data().decode('utf-8')
     update = telebot.types.Update.de_json(json_string)
