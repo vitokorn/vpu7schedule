@@ -103,9 +103,9 @@ def today(message):
         if message.from_user.language_code == "uk":
             bot.reply_to(message, '\n'.join(less))
         elif message.from_user.language_code == "ru":
-            bot.reply_to(message, ''.join(less))
+            bot.reply_to(message, '\n'.join(less))
         else:
-            bot.reply_to(message, ''.join(less))
+            bot.reply_to(message, '\n'.join(less))
     except:
         print(traceback.format_exc())
 
