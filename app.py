@@ -50,11 +50,12 @@ class Student(db.Model):
     username = db.Column(db.String)
     tid = db.Column(db.Integer)
     language_code = db.Column(db.String)
-    group = db.Column(
+    group_id = db.Column(
         db.Integer,
         db.ForeignKey("group.id", ondelete="CASCADE"),
         nullable=False
     )
+    group = db.relationship("Group", backref="Student")
 
 
 class User:
@@ -116,6 +117,7 @@ def today(message):
 def process_group_step(message):
     try:
         st = Student.query.filter_by(tid=message.from_user.id).first()
+        print(st)
         if st is None:
             group = Group.query.filter_by(name=message.text).first()
             get_or_create(db.session,Student,tid=message.from_user.id,defaults={'first_name':message.from_user.first_name,'username':message.from_user.username,'language_code':message.from_user.language_code,'group':group.id})
@@ -133,6 +135,7 @@ def process_group_step(message):
             bot.reply_to(message, 'Group selected ')
         # bot.register_next_step_handler(msg, process_age_step)
     except Exception as e:
+        print(traceback.format_exc())
         bot.reply_to(message, 'oooops')
 
 
