@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 from sqlalchemy.sql import ClauseElement
 import telebot
 import urllib3
+
 http = urllib3.PoolManager()
 
 app = Flask(__name__)
@@ -22,7 +23,6 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 TOKEN = os.environ.get('TOKEN')
 bot = telebot.TeleBot(TOKEN)
-
 
 first_start = "8:30"
 first_end = "9:15"
@@ -118,7 +118,7 @@ def today(message):
         less = []
         lessons = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(Lessons.order)
         for le in lessons:
-            start,end = None,None
+            start, end = None, None
             if le.order == 1:
                 start = first_start
                 end = first_end
@@ -133,20 +133,20 @@ def today(message):
                 end = fourth_end
             elif le.order == 5:
                 start = fifth_start
-                end =fifth_end
+                end = fifth_end
             elif le.order == 6:
                 start = sixth_start
-                end =sixth_end
+                end = sixth_end
             elif le.order == 7:
                 start = seventh_start
-                end =seventh_end
+                end = seventh_end
             elif le.order == 8:
                 start = eighth_start
-                end =eighth_end
+                end = eighth_end
             elif le.order == 9:
                 start = ninth_start
-                end =ninth_end
-            text = f'{le.order ^15}Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+                end = ninth_end
+            text = f'{le.order}Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
             less.append(text)
         if message.from_user.language_code == "uk":
             bot.reply_to(message, '\n\n'.join(less))
@@ -201,8 +201,53 @@ def tomorrow(message):
                 elif le.order == 9:
                     start = ninth_start
                     end = ninth_end
-                text = f'{le.order ^15}Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+                text = f'{le.order ^ 15}Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
                 less.append(text)
+        if message.from_user.language_code == "uk":
+            bot.reply_to(message, '\n'.join(less))
+        elif message.from_user.language_code == "ru":
+            bot.reply_to(message, '\n'.join(less))
+        else:
+            bot.reply_to(message, '\n'.join(less))
+    except:
+        print(traceback.format_exc())
+
+
+@bot.message_handler(commands=['calls'])
+def calls(message):
+    try:
+        less = []
+        for order in range(1, 10):
+            start, end = None, None
+            if order == 1:
+                start = first_start
+                end = first_end
+            elif order == 2:
+                start = second_start
+                end = second_end
+            elif order == 3:
+                start = third_start
+                end = third_end
+            elif order == 4:
+                start = fourth_start
+                end = fourth_end
+            elif order == 5:
+                start = fifth_start
+                end = fifth_end
+            elif order == 6:
+                start = sixth_start
+                end = sixth_end
+            elif order == 7:
+                start = seventh_start
+                end = seventh_end
+            elif order == 8:
+                start = eighth_start
+                end = eighth_end
+            elif order == 9:
+                start = ninth_start
+                end = ninth_end
+            text = f'{start} {end}'
+            less.append(text)
         if message.from_user.language_code == "uk":
             bot.reply_to(message, '\n'.join(less))
         elif message.from_user.language_code == "ru":
@@ -223,7 +268,9 @@ def process_group_step(message):
         print(st)
         if st is None:
             group = Group.query.filter_by(name=message.text).first()
-            get_or_create(db.session,Student,tid=message.from_user.id,defaults={'first_name':message.from_user.first_name,'username':message.from_user.username,'language_code':message.from_user.language_code,'group':group})
+            get_or_create(db.session, Student, tid=message.from_user.id,
+                          defaults={'first_name': message.from_user.first_name, 'username': message.from_user.username,
+                                    'language_code': message.from_user.language_code, 'group': group})
         else:
             group = Group.query.filter_by(name=message.text).first()
             st.group = group.id
@@ -259,7 +306,8 @@ def webhook():
 
 @app.route("/sync")
 def sync():
-    req = requests.get(url='http://schedule.in.ua:3200/groups', headers={'X-Institution': 'vische-profesiine-uchilische-7'})
+    req = requests.get(url='http://schedule.in.ua:3200/groups',
+                       headers={'X-Institution': 'vische-profesiine-uchilische-7'})
     res = req.json()
 
     for r in res:
@@ -294,7 +342,9 @@ def sync():
                 teacher = d['teacher']['name']
             else:
                 teacher = None
-            lessons, create = get_or_create(db.session, Lessons, room=room, subject=d['subject']['name'],teacher=teacher,date=parseddate,group=d['group']['name'],order=d['order'])
+            lessons, create = get_or_create(db.session, Lessons, room=room, subject=d['subject']['name'],
+                                            teacher=teacher, date=parseddate, group=d['group']['name'],
+                                            order=d['order'])
 
 
 def get_or_create(session, model, defaults=None, **kwargs):
@@ -319,5 +369,3 @@ def get_or_create(session, model, defaults=None, **kwargs):
 @app.route('/')
 def hello_world():
     return 'Hello World!'
-
-
