@@ -146,7 +146,7 @@ def today(message):
             elif le.order == 9:
                 start = ninth_start
                 end = ninth_end
-            text = f'{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+            text = f'{le.order:^10} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
             less.append(text)
         if message.from_user.language_code == "uk":
             bot.reply_to(message, '\n\n'.join(less))
@@ -158,7 +158,7 @@ def today(message):
         print(traceback.format_exc())
 
 
-@bot.message_handler(commands=['tommorow'])
+@bot.message_handler(commands=['tomorrow'])
 def tomorrow(message):
     try:
         st = Student.query.filter_by(tid=message.from_user.id).first()
@@ -260,7 +260,7 @@ def calls(message):
 
 @bot.message_handler(commands=['help'])
 def help(message):
-    msg = f'Команды: /today, /tomorrow, /next_three_day, /week, /nextweek, предназначены для получения расписания на определенное к-во дней. Имеют две формы:\n 1. Исходная (/today) – предназначена для получения расписания пользователю, который был ранее зарегистрирован.\n2. Дополненная (/today КИ-14-1) – предназначена для получения расписания для произвольной группы (не требует регистрацию).\nДля регистрации необходимо ввести команду /set и в следующем сообщении указать свою группу.\n'
+    msg = f'Команды: /today, /tomorrow, /next_three_days, /week, /nextweek, предназначены для получения расписания на определенное к-во дней. Имеют две формы:\n 1. Исходная (/today) – предназначена для получения расписания пользователю, который был ранее зарегистрирован.\n2. Дополненная (/today КИ-14-1) – предназначена для получения расписания для произвольной группы (не требует регистрацию).\nДля регистрации необходимо ввести команду /set и в следующем сообщении указать свою группу.\n'
     bot.send_message(message.chat.id, msg)
 
 # @bot.message_handler(func=lambda message: True, content_types=['text'])
