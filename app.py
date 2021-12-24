@@ -162,7 +162,11 @@ def sync():
                     room = d['room']['name']
             else:
                 room = None
-            lessons, create = get_or_create(db.session, Lessons, room=room, subject=d['subject']['name'],teacher=d['teacher']['name'],date=parseddate,group=d['group']['name'],order=d['order'])
+            if d['teacher'] and d['teacher']['name']:
+                teacher = d['teacher']['name']
+            else:
+                teacher = None
+            lessons, create = get_or_create(db.session, Lessons, room=room, subject=d['subject']['name'],teacher=teacher,date=parseddate,group=d['group']['name'],order=d['order'])
 
 
 def get_or_create(session, model, defaults=None, **kwargs):
