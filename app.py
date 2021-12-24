@@ -146,7 +146,7 @@ def today(message):
             elif le.order == 9:
                 start = ninth_start
                 end = ninth_end
-            text = f'{le.order}Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+            text = f'{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
             less.append(text)
         if message.from_user.language_code == "uk":
             bot.reply_to(message, '\n\n'.join(less))
@@ -201,7 +201,7 @@ def tomorrow(message):
                 elif le.order == 9:
                     start = ninth_start
                     end = ninth_end
-                text = f'{le.order ^ 15}Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+                text = f'{le.order ^ 15} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
                 less.append(text)
         if message.from_user.language_code == "uk":
             bot.reply_to(message, '\n'.join(less))
@@ -246,7 +246,7 @@ def calls(message):
             elif order == 9:
                 start = ninth_start
                 end = ninth_end
-            text = f'{start} {end}'
+            text = f'{order}Пара {start} {end}'
             less.append(text)
         if message.from_user.language_code == "uk":
             bot.reply_to(message, '\n'.join(less))
