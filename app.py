@@ -498,7 +498,7 @@ def sync():
         nd = orjson.dumps(data)
 
         req3 = http.request(method='POST', url='http://schedule.in.ua:3200/lessons/query', body=nd,
-                            headers={'X-Institution': 'vische-profesiine-uchilische-7'})
+                            headers={'X-Institution': 'vische-profesiine-uchilische-7','Content-Type': 'application/json'})
         res3 = orjson.loads(req3.data)
         print(g.name)
         print(len(res3))
