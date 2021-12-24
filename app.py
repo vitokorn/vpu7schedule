@@ -359,17 +359,17 @@ def next_three_days(message):
                 less3.append(text)
         if message.from_user.language_code == "uk":
             # bot.reply_to(message, '\n'.join(less))
-            bot.send_message(chat_id=message.chat.id,text='\n'.join(less1))
-            bot.send_message(chat_id=message.chat.id, text='\n'.join(less2))
-            bot.send_message(chat_id=message.chat.id, text='\n'.join(less3))
+            bot.send_message(chat_id=message.chat.id,text='\n\n'.join(less1))
+            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less2))
+            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less3))
         elif message.from_user.language_code == "ru":
-            bot.send_message(chat_id=message.chat.id,text='\n'.join(less1))
-            bot.send_message(chat_id=message.chat.id, text='\n'.join(less2))
-            bot.send_message(chat_id=message.chat.id, text='\n'.join(less3))
+            bot.send_message(chat_id=message.chat.id,text='\n\n'.join(less1))
+            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less2))
+            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less3))
         else:
-            bot.send_message(chat_id=message.chat.id,text='\n'.join(less1))
-            bot.send_message(chat_id=message.chat.id, text='\n'.join(less2))
-            bot.send_message(chat_id=message.chat.id, text='\n'.join(less3))
+            bot.send_message(chat_id=message.chat.id,text='\n\n'.join(less1))
+            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less2))
+            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less3))
     except:
         print(traceback.format_exc())
 
