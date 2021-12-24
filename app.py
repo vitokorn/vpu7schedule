@@ -118,11 +118,14 @@ def today(message):
     try:
         args = extract_arg(message.text)
         print(args)
-        st = Student.query.filter_by(tid=message.from_user.id).first()
         dt = datetime.now()
         dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)  # Returns a copy
         less = []
-        lessons = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(Lessons.order)
+        if len(args) > 0:
+            lessons = Lessons.query.filter_by(group=args, date=dt).order_by(Lessons.order)
+        else:
+            st = Student.query.filter_by(tid=message.from_user.id).first()
+            lessons = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(Lessons.order)
         for le in lessons:
             start, end = None, None
             if le.order == 1:
