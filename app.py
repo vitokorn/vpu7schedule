@@ -501,6 +501,7 @@ def sync():
         for d in res3:
             print(d)
             parseddate = datetime.strptime(d['date'], '%Y-%m-%dT%H:%M:%S.%fZ')
+            print(parseddate)
             if d['room'] and d['room']['name']:
                 room = d['room']['name']
             else:
