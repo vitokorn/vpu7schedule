@@ -119,7 +119,10 @@ def aggregatio(lessons,less,dt):
         elif le.order == 9:
             start = ninth_start
             end = ninth_end
-        text = f'{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+        if le.teacher:
+            text = f'{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+        else:
+            text = f'{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}'
         less.append(text)
     return less
 
@@ -342,7 +345,7 @@ def week(message):
         else:
             less5 = aggregatio(lessons5, less5, friday)
         if lessons6.first() is None:
-            text = f'{friday.strftime("%d-%m-%Y")}\nПар нет'
+            text = f'{sunday.strftime("%d-%m-%Y")}\nПар нет'
             less6.append(text)
         else:
             less3 = aggregatio(lessons6, less6, sunday)
