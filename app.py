@@ -101,6 +101,31 @@ def today(message):
             text = f'{le.order}\n{le.subject}\n{le.room}\n{le.teacher}'
             less.append(text)
         if message.from_user.language_code == "uk":
+            bot.reply_to(message, '\n\n'.join(less))
+        elif message.from_user.language_code == "ru":
+            bot.reply_to(message, '\n\n'.join(less))
+        else:
+            bot.reply_to(message, '\n\n'.join(less))
+    except:
+        print(traceback.format_exc())
+
+
+@bot.message_handler(commands=['tomorrow'])
+def tomorrow(message):
+    try:
+        st = Student.query.filter_by(tid=message.from_user.id).first()
+        dt = datetime.now() + timedelta(days=1)
+        dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)  # Returns a copy
+        less = []
+        lessons = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(Lessons.order)
+        if lessons is None:
+            text = "Пар нет"
+            less.append(text)
+        else:
+            for le in lessons:
+                text = f'{le.order}\n{le.subject}\n{le.room}\n{le.teacher}'
+                less.append(text)
+        if message.from_user.language_code == "uk":
             bot.reply_to(message, '\n'.join(less))
         elif message.from_user.language_code == "ru":
             bot.reply_to(message, '\n'.join(less))
