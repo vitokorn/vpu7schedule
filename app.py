@@ -24,6 +24,26 @@ TOKEN = os.environ.get('TOKEN')
 bot = telebot.TeleBot(TOKEN)
 
 
+first_start = "8:30"
+first_end = "9:15"
+second_start = "9:25"
+second_end = "10:10"
+third_start = "10:25"
+third_end = "11:10"
+fourth_start = "11:30"
+fourth_end = "12:15"
+fifth_start = "12:35"
+fifth_end = "13:20"
+sixth_start = "13:30"
+sixth_end = "14:15"
+seventh_start = "14:30"
+seventh_end = "15:15"
+eighth_start = "15:25"
+eighth_end = "16:10"
+ninth_start = "16:25"
+ninth_end = "17:10"
+
+
 class Group(db.Model):
     __tablename__ = 'group'
 
@@ -98,7 +118,35 @@ def today(message):
         less = []
         lessons = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(Lessons.order)
         for le in lessons:
-            text = f'{le.order}\n{le.subject}\n{le.room}\n{le.teacher}'
+            start,end = None,None
+            if le.order == 1:
+                start = first_start
+                end = first_end
+            elif le.order == 2:
+                start = second_start
+                end = second_end
+            elif le.order == 3:
+                start = third_start
+                end = third_end
+            elif le.order == 4:
+                start = fourth_start
+                end = fourth_end
+            elif le.order == 5:
+                start = fifth_start
+                end =fifth_end
+            elif le.order == 6:
+                start = sixth_start
+                end =sixth_end
+            elif le.order == 7:
+                start = seventh_start
+                end =seventh_end
+            elif le.order == 8:
+                start = eighth_start
+                end =eighth_end
+            elif le.order == 9:
+                start = ninth_start
+                end =ninth_end
+            text = f'{le.order}\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
             less.append(text)
         if message.from_user.language_code == "uk":
             bot.reply_to(message, '\n\n'.join(less))
@@ -118,12 +166,40 @@ def tomorrow(message):
         dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)  # Returns a copy
         less = []
         lessons = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(Lessons.order)
-        if lessons is None:
+        if lessons.first() is None:
             text = "Пар нет"
             less.append(text)
         else:
             for le in lessons:
-                text = f'{le.order}\n{le.subject}\n{le.room}\n{le.teacher}'
+                start, end = None, None
+                if le.order == 1:
+                    start = first_start
+                    end = first_end
+                elif le.order == 2:
+                    start = second_start
+                    end = second_end
+                elif le.order == 3:
+                    start = third_start
+                    end = third_end
+                elif le.order == 4:
+                    start = fourth_start
+                    end = fourth_end
+                elif le.order == 5:
+                    start = fifth_start
+                    end = fifth_end
+                elif le.order == 6:
+                    start = sixth_start
+                    end = sixth_end
+                elif le.order == 7:
+                    start = seventh_start
+                    end = seventh_end
+                elif le.order == 8:
+                    start = eighth_start
+                    end = eighth_end
+                elif le.order == 9:
+                    start = ninth_start
+                    end = ninth_end
+                text = f'{le.order}\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
                 less.append(text)
         if message.from_user.language_code == "uk":
             bot.reply_to(message, '\n'.join(less))
