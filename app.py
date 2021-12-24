@@ -158,7 +158,7 @@ def today(message):
         print(traceback.format_exc())
 
 
-@bot.message_handler(commands=['tomorrow'])
+@bot.message_handler(commands=['tommorow'])
 def tomorrow(message):
     try:
         st = Student.query.filter_by(tid=message.from_user.id).first()
@@ -166,6 +166,8 @@ def tomorrow(message):
         dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)  # Returns a copy
         less = []
         lessons = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(Lessons.order)
+        print(lessons)
+        print(lessons.first)
         if lessons.first() is None:
             text = "Пар нет"
             less.append(text)
