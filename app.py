@@ -120,7 +120,7 @@ def process_group_step(message):
         print(st)
         if st is None:
             group = Group.query.filter_by(name=message.text).first()
-            get_or_create(db.session,Student,tid=message.from_user.id,defaults={'first_name':message.from_user.first_name,'username':message.from_user.username,'language_code':message.from_user.language_code,'group':group.id})
+            get_or_create(db.session,Student,tid=message.from_user.id,defaults={'first_name':message.from_user.first_name,'username':message.from_user.username,'language_code':message.from_user.language_code,'group':group})
         else:
             group = Group.query.filter_by(name=message.text).first()
             st.group = group.id
