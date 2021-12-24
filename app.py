@@ -41,12 +41,16 @@ class Lessons(db.Model):
 
 class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True, index=True)
-    nickname = db.Column(db.String)
+    first_name = db.Column(db.String)
+    username = db.Column(db.String)
+    last_name = db.Column(db.String)
+    language_code = db.Column(db.String)
     group = db.ForeignKey(Group)
 
 
 @bot.message_handler(commands=['start'])
 def start(message):
+    print(message.from_user)
     bot.reply_to(message, 'Hello, ' + message.from_user.first_name)
 
 
