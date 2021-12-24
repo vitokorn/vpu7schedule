@@ -494,15 +494,16 @@ def sync():
             'group': f'{g.uid}',
             'to': f'{sunday}T10:00:00.000Z'
         }
+        print(f'497 {data}')
         nd = orjson.dumps(data)
 
         req3 = http.request(method='POST', url='http://schedule.in.ua:3200/lessons/query', body=nd,
                             headers={'X-Institution': 'vische-profesiine-uchilische-7'})
         res3 = orjson.loads(req3.data)
         for d in res3:
-            print(d)
+            print(f'504 {d}')
             parseddate = datetime.strptime(d['date'], '%Y-%m-%dT%H:%M:%S.%fZ')
-            print(parseddate)
+            print(f'506 {parseddate}')
             if d['room'] and d['room']['name']:
                 room = d['room']['name']
             else:
