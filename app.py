@@ -122,7 +122,7 @@ def today(message):
         dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)  # Returns a copy
         less = []
         if len(args) > 0:
-            lessons = Lessons.query.filter_by(group=args, date=dt).order_by(Lessons.order)
+            lessons = Lessons.query.filter_by(group=''.join(args), date=dt).order_by(Lessons.order)
         else:
             st = Student.query.filter_by(tid=message.from_user.id).first()
             lessons = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(Lessons.order)
