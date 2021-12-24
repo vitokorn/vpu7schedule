@@ -1,4 +1,5 @@
 import os
+import traceback
 
 import orjson
 import requests
@@ -89,20 +90,23 @@ def setgroup(message):
 
 @bot.message_handler(commands=['today'])
 def today(message):
-    st = Student.query.filter_by(tid=message.from_user.id).first()
-    dt = datetime.now()
-    dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)  # Returns a copy
-    less = []
-    lessons = Lessons.query.filter_by(group=st.group, date=dt).order_by(Lessons.order)
-    for le in lessons:
-        text = f'Название предмета {le.subject}, учитель {le.teacher},аудитория {le.room},пара {le.order}'
-        less.append(text)
-    if message.from_user.language_code == "uk":
-        bot.reply_to(message, ''.join(less))
-    elif message.from_user.language_code == "ru":
-        bot.reply_to(message, ''.join(less))
-    else:
-        bot.reply_to(message, ''.join(less))
+    try:
+        st = Student.query.filter_by(tid=message.from_user.id).first()
+        dt = datetime.now()
+        dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)  # Returns a copy
+        less = []
+        lessons = Lessons.query.filter_by(group=st.group, date=dt).order_by(Lessons.order)
+        for le in lessons:
+            text = f'Название предмета {le.subject}, учитель {le.teacher},аудитория {le.room},пара {le.order}'
+            less.append(text)
+        if message.from_user.language_code == "uk":
+            bot.reply_to(message, ''.join(less))
+        elif message.from_user.language_code == "ru":
+            bot.reply_to(message, ''.join(less))
+        else:
+            bot.reply_to(message, ''.join(less))
+    except:
+        print(traceback.format_exc())
 
 
 # @bot.message_handler(func=lambda message: True, content_types=['text'])
