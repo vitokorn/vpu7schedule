@@ -98,7 +98,7 @@ def today(message):
         less = []
         lessons = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(Lessons.order)
         for le in lessons:
-            text = f'Название предмета {le.subject}, учитель {le.teacher},аудитория {le.room},пара {le.order}'
+            text = f'{le.order}\n{le.subject}\n{le.room}\n{le.teacher}'
             less.append(text)
         if message.from_user.language_code == "uk":
             bot.reply_to(message, '\n'.join(less))
