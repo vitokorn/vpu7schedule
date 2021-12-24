@@ -15,7 +15,7 @@ http = urllib3.PoolManager()
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config[
-    'SQLALCHEMY_DATABASE_URI'] = os.environ.get('db')
+    'SQLALCHEMY_DATABASE_URI'] = 'postgresql://vhvqgfyrwtecfm:58b4a3b0ee2fac3900bd1bde811997806add4a3f7f0881d11f3c61c986fe660a@ec2-52-49-23-139.eu-west-1.compute.amazonaws.com:5432/d6b2eo93i2ov6a'
 app.jinja_env.auto_reload = True
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -40,7 +40,7 @@ class Lessons(db.Model):
     teacher = db.Column(db.String)
     date = db.Column(db.DateTime, default=datetime.utcnow)
     group = db.Column(db.String)
-    lorder = db.Column(db.String)
+    order = db.Column(db.Integer, nullable=False)
 
 
 class Student(db.Model):
@@ -157,7 +157,7 @@ def sync():
         for d in res3:
             print(d)
             parseddate = datetime.strptime(d['date'], '%Y-%m-%dT%H:%M:%S.%fZ')
-            lessons, create = get_or_create(db.session, Lessons, room=d['room']['name'], subject=d['subject']['name'],teacher=d['teacher']['name'],date=parseddate,group=d['group']['name'],lorder=d['order'])
+            lessons, create = get_or_create(db.session, Lessons, room=d['room']['name'], subject=d['subject']['name'],teacher=d['teacher']['name'],date=parseddate,group=d['group']['name'],order=d['order'])
 
 
 def get_or_create(session, model, defaults=None, **kwargs):
