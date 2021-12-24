@@ -170,54 +170,186 @@ def today(message):
 @bot.message_handler(commands=['tomorrow'])
 def tomorrow(message):
     try:
+        args = extract_arg(message.text)
         st = Student.query.filter_by(tid=message.from_user.id).first()
         dt = datetime.now() + timedelta(days=1)
         dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)  # Returns a copy
         less = []
-        lessons = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(Lessons.order)
-        print(lessons)
-        print(lessons.first)
-        if lessons.first() is None:
-            text = "Пар нет"
-            less.append(text)
+        if len(args) > 0:
+            lessons = Lessons.query.filter_by(group=''.join(args), date=dt).order_by(Lessons.order)
         else:
-            for le in lessons:
-                start, end = None, None
-                if le.order == 1:
-                    start = first_start
-                    end = first_end
-                elif le.order == 2:
-                    start = second_start
-                    end = second_end
-                elif le.order == 3:
-                    start = third_start
-                    end = third_end
-                elif le.order == 4:
-                    start = fourth_start
-                    end = fourth_end
-                elif le.order == 5:
-                    start = fifth_start
-                    end = fifth_end
-                elif le.order == 6:
-                    start = sixth_start
-                    end = sixth_end
-                elif le.order == 7:
-                    start = seventh_start
-                    end = seventh_end
-                elif le.order == 8:
-                    start = eighth_start
-                    end = eighth_end
-                elif le.order == 9:
-                    start = ninth_start
-                    end = ninth_end
-                text = f'{le.order ^ 15} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
-                less.append(text)
+            st = Student.query.filter_by(tid=message.from_user.id).first()
+            lessons = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(Lessons.order)
+        for le in lessons:
+            start, end = None, None
+            if le.order == 1:
+                start = first_start
+                end = first_end
+            elif le.order == 2:
+                start = second_start
+                end = second_end
+            elif le.order == 3:
+                start = third_start
+                end = third_end
+            elif le.order == 4:
+                start = fourth_start
+                end = fourth_end
+            elif le.order == 5:
+                start = fifth_start
+                end = fifth_end
+            elif le.order == 6:
+                start = sixth_start
+                end = sixth_end
+            elif le.order == 7:
+                start = seventh_start
+                end = seventh_end
+            elif le.order == 8:
+                start = eighth_start
+                end = eighth_end
+            elif le.order == 9:
+                start = ninth_start
+                end = ninth_end
+            text = f'{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+            less.append(text)
         if message.from_user.language_code == "uk":
             bot.reply_to(message, '\n'.join(less))
         elif message.from_user.language_code == "ru":
             bot.reply_to(message, '\n'.join(less))
         else:
             bot.reply_to(message, '\n'.join(less))
+    except:
+        print(traceback.format_exc())
+
+
+@bot.message_handler(commands=['next_three_days'])
+def next_three_days(message):
+    try:
+        args = extract_arg(message.text)
+        st = Student.query.filter_by(tid=message.from_user.id).first()
+        td = datetime.now()
+        td = td.replace(hour=12, minute=0, second=0, microsecond=0)
+        dt = datetime.now() + timedelta(days=1)
+        dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)
+        tdat = datetime.now() + timedelta(days=2)
+        tdat = dt.replace(hour=12, minute=0, second=0, microsecond=0)
+        less1 = []
+        less2 = []
+        less3 = []
+        if len(args) > 0:
+            lessons1 = Lessons.query.filter_by(group=''.join(args), date=td).order_by(Lessons.order)
+            lessons2 = Lessons.query.filter_by(group=''.join(args), date=dt).order_by(Lessons.order)
+            lessons3 = Lessons.query.filter_by(group=''.join(args), date=tdat).order_by(Lessons.order)
+        else:
+            st = Student.query.filter_by(tid=message.from_user.id).first()
+            lessons1 = Lessons.query.filter_by(group=st.group.name, date=td).order_by(Lessons.order)
+            lessons2 = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(Lessons.order)
+            lessons3 = Lessons.query.filter_by(group=st.group.name, date=tdat).order_by(Lessons.order)
+        for le in lessons1:
+            start, end = None, None
+            if le.order == 1:
+                start = first_start
+                end = first_end
+            elif le.order == 2:
+                start = second_start
+                end = second_end
+            elif le.order == 3:
+                start = third_start
+                end = third_end
+            elif le.order == 4:
+                start = fourth_start
+                end = fourth_end
+            elif le.order == 5:
+                start = fifth_start
+                end = fifth_end
+            elif le.order == 6:
+                start = sixth_start
+                end = sixth_end
+            elif le.order == 7:
+                start = seventh_start
+                end = seventh_end
+            elif le.order == 8:
+                start = eighth_start
+                end = eighth_end
+            elif le.order == 9:
+                start = ninth_start
+                end = ninth_end
+            text = f'{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+            less1.append(text)
+        for le in lessons2:
+            start, end = None, None
+            if le.order == 1:
+                start = first_start
+                end = first_end
+            elif le.order == 2:
+                start = second_start
+                end = second_end
+            elif le.order == 3:
+                start = third_start
+                end = third_end
+            elif le.order == 4:
+                start = fourth_start
+                end = fourth_end
+            elif le.order == 5:
+                start = fifth_start
+                end = fifth_end
+            elif le.order == 6:
+                start = sixth_start
+                end = sixth_end
+            elif le.order == 7:
+                start = seventh_start
+                end = seventh_end
+            elif le.order == 8:
+                start = eighth_start
+                end = eighth_end
+            elif le.order == 9:
+                start = ninth_start
+                end = ninth_end
+            text = f'{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+            less2.append(text)
+        for le in lessons3:
+            start, end = None, None
+            if le.order == 1:
+                start = first_start
+                end = first_end
+            elif le.order == 2:
+                start = second_start
+                end = second_end
+            elif le.order == 3:
+                start = third_start
+                end = third_end
+            elif le.order == 4:
+                start = fourth_start
+                end = fourth_end
+            elif le.order == 5:
+                start = fifth_start
+                end = fifth_end
+            elif le.order == 6:
+                start = sixth_start
+                end = sixth_end
+            elif le.order == 7:
+                start = seventh_start
+                end = seventh_end
+            elif le.order == 8:
+                start = eighth_start
+                end = eighth_end
+            elif le.order == 9:
+                start = ninth_start
+                end = ninth_end
+            text = f'{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+            less3.append(text)
+        if message.from_user.language_code == "uk":
+            # bot.reply_to(message, '\n'.join(less))
+            bot.send_message(chat_id=message.chat.id,text='\n'.join(less1))
+            bot.send_message(chat_id=message.chat.id, text='\n'.join(less2))
+            bot.send_message(chat_id=message.chat.id, text='\n'.join(less3))
+        elif message.from_user.language_code == "ru":
+            bot.send_message(chat_id=message.chat.id,text='\n'.join(less1))
+            bot.send_message(chat_id=message.chat.id, text='\n'.join(less2))
+            bot.send_message(chat_id=message.chat.id, text='\n'.join(less3))
+        else:
+            bot.send_message(chat_id=message.chat.id,text='\n'.join(less1))
+            bot.send_message(chat_id=message.chat.id, text='\n'.join(less2))
+            bot.send_message(chat_id=message.chat.id, text='\n'.join(less3))
     except:
         print(traceback.format_exc())
 
@@ -269,7 +401,7 @@ def calls(message):
 
 @bot.message_handler(commands=['help'])
 def help(message):
-    msg = f'Команды: /today, /tomorrow, /next_three_days, /week, /nextweek, предназначены для получения расписания на определенное к-во дней. Имеют две формы:\n 1. Исходная (/today) – предназначена для получения расписания пользователю, который был ранее зарегистрирован.\n2. Дополненная (/today КИ-14-1) – предназначена для получения расписания для произвольной группы (не требует регистрацию).\nДля регистрации необходимо ввести команду /set и в следующем сообщении указать свою группу.\n'
+    msg = f'Команды: /today, /tomorrow, /next_three_days, /week, /nextweek, предназначены для получения расписания на определенное к-во дней. Имеют две формы:\n 1. Исходная (/today) – предназначена для получения расписания пользователю, который был ранее зарегистрирован.\n2. Дополненная (/today О1-20) – предназначена для получения расписания для произвольной группы (не требует регистрацию).\nДля регистрации необходимо ввести команду /set и в следующем сообщении указать свою группу.\n'
     bot.send_message(message.chat.id, msg)
 
 # @bot.message_handler(func=lambda message: True, content_types=['text'])
