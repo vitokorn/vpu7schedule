@@ -127,7 +127,7 @@ def today(message):
             st = Student.query.filter_by(tid=message.from_user.id).first()
             lessons = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(Lessons.order)
         if lessons.first() is None:
-            text = "Пар нет"
+            text = f'{dt.strftime("%d-%m-%Y")}\nПар нет'
             less.append(text)
         else:
             for le in lessons:
@@ -185,7 +185,7 @@ def tomorrow(message):
             st = Student.query.filter_by(tid=message.from_user.id).first()
             lessons = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(Lessons.order)
         if lessons.first() is None:
-            text = "Пар нет"
+            text = f'{dt.strftime("%d-%m-%Y")}\nПар нет'
             less.append(text)
         else:
             for le in lessons:
@@ -253,7 +253,7 @@ def next_three_days(message):
             lessons2 = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(Lessons.order)
             lessons3 = Lessons.query.filter_by(group=st.group.name, date=tdat).order_by(Lessons.order)
         if lessons1.first() is None:
-            text = "Пар нет"
+            text = f'{td.strftime("%d-%m-%Y")}\nПар нет'
             less1.append(text)
         else:
             for le in lessons1:
@@ -288,7 +288,7 @@ def next_three_days(message):
                 text = f'{td.strftime("%d-%m-%Y")}\n{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
                 less1.append(text)
         if lessons2.first() is None:
-            text = "Пар нет"
+            text = f'{td.strftime("%d-%m-%Y")}\nПар нет'
             less2.append(text)
         else:
             for le in lessons2:
@@ -323,7 +323,7 @@ def next_three_days(message):
                 text = f'{td.strftime("%d-%m-%Y")}\n{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
                 less2.append(text)
         if lessons3.first() is None:
-            text = "Пар нет"
+            text = f'{td.strftime("%d-%m-%Y")}\nПар нет'
             less3.append(text)
         else:
             for le in lessons3:
