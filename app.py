@@ -101,7 +101,7 @@ def today(message):
             text = f'Название предмета {le.subject}, учитель {le.teacher},аудитория {le.room},пара {le.order}'
             less.append(text)
         if message.from_user.language_code == "uk":
-            bot.reply_to(message, ''.join(less))
+            bot.reply_to(message, '\n'.join(less))
         elif message.from_user.language_code == "ru":
             bot.reply_to(message, ''.join(less))
         else:
