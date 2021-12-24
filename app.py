@@ -87,6 +87,10 @@ class User:
 user_dict = {}
 
 
+def extract_arg(arg):
+    return arg.split()[1:]
+
+
 @bot.message_handler(commands=['start'])
 def start(message):
     print(message.from_user)
@@ -112,6 +116,8 @@ def setgroup(message):
 @bot.message_handler(commands=['today'])
 def today(message):
     try:
+        args = extract_arg(message.text)
+        print(args)
         st = Student.query.filter_by(tid=message.from_user.id).first()
         dt = datetime.now()
         dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)  # Returns a copy
@@ -146,7 +152,7 @@ def today(message):
             elif le.order == 9:
                 start = ninth_start
                 end = ninth_end
-            text = f'{le.order:^10} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+            text = f'{le.order:^10 Пара}\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
             less.append(text)
         if message.from_user.language_code == "uk":
             bot.reply_to(message, '\n\n'.join(less))
