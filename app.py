@@ -285,7 +285,7 @@ def next_three_days(message):
                 elif le.order == 9:
                     start = ninth_start
                     end = ninth_end
-                text = f'{td}\n{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+                text = f'{td.strftime("%d-%m-%Y")}\n{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
                 less1.append(text)
         if lessons2.first() is None:
             text = "Пар нет"
@@ -320,7 +320,7 @@ def next_three_days(message):
                 elif le.order == 9:
                     start = ninth_start
                     end = ninth_end
-                text = f'{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+                text = f'{td.strftime("%d-%m-%Y")}\n{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
                 less2.append(text)
         if lessons3.first() is None:
             text = "Пар нет"
@@ -355,7 +355,7 @@ def next_three_days(message):
                 elif le.order == 9:
                     start = ninth_start
                     end = ninth_end
-                text = f'{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+                text = f'{td.strftime("%d-%m-%Y")}\n{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
                 less3.append(text)
         if message.from_user.language_code == "uk":
             # bot.reply_to(message, '\n'.join(less))
