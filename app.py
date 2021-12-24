@@ -40,7 +40,7 @@ class Lessons(db.Model):
     teacher = db.Column(db.String)
     date = db.Column(db.DateTime, default=datetime.utcnow)
     group = db.Column(db.String)
-    order = db.Column(db.String)
+    lorder = db.Column(db.String)
 
 
 class Student(db.Model):
@@ -93,10 +93,6 @@ def setgroup(message):
 
 def process_group_step(message):
     try:
-        chat_id = message.chat.id
-        name = message.text
-        user = User(name)
-        user_dict[chat_id] = user
         st = Student.query.filter_by(tid=message.from_user.id).first()
         if st is None:
             group = Group.query.filter_by(name=message.text).first()
@@ -153,7 +149,7 @@ def sync():
                             headers={'X-Institution': 'vische-profesiine-uchilische-7'})
         res3 = orjson.loads(req3.data)
         for d in res3:
-            lessons, create = get_or_create(db.session, Lessons, room=d['room']['name'], subject=d['subject']['name'],teacher=d['teacher']['name'],date=d['date'],group=d['group']['name'],order=d['order'])
+            lessons, create = get_or_create(db.session, Lessons, room=d['room']['name'], subject=d['subject']['name'],teacher=d['teacher']['name'],date=d['date'],group=d['group']['name'],lorder=d['order'])
 
 
 def get_or_create(session, model, defaults=None, **kwargs):
