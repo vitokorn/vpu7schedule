@@ -1,11 +1,12 @@
 import requests
 import orjson
 from datetime import datetime, timedelta
-from app import Group, get_or_create, db,Lessons
+from app import Group, get_or_create, db, Lessons, app
 import urllib3
 http = urllib3.PoolManager()
 
 
+@app.route("/sync")
 def sync():
     req = requests.get(url='http://schedule.in.ua:3200/groups', headers={'X-Institution': 'vische-profesiine-uchilische-7'})
     res = req.json()

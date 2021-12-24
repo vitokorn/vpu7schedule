@@ -43,7 +43,7 @@ class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True, index=True)
     first_name = db.Column(db.String)
     username = db.Column(db.String)
-    last_name = db.Column(db.String)
+    tid = db.Column(db.Integer)
     language_code = db.Column(db.String)
     group = db.Column(
         db.Integer,
@@ -52,15 +52,60 @@ class Student(db.Model):
     )
 
 
+class User:
+    def __init__(self, name):
+        self.name = name
+        self.group = None
+
+
+user_dict = {}
+
+
 @bot.message_handler(commands=['start'])
 def start(message):
     print(message.from_user)
-    bot.reply_to(message, 'Hello, ' + message.from_user.first_name)
+    if message.from_user.language_code == "uk":
+        bot.reply_to(message, 'Привiт, ' + message.from_user.first_name)
+    elif message.from_user.language_code == "ru":
+        bot.reply_to(message, 'Привет, ' + message.from_user.first_name)
+    else:
+        bot.reply_to(message, 'Hello, ' + message.from_user.first_name)
 
 
-@bot.message_handler(func=lambda message: True, content_types=['text'])
-def echo_message(message):
-    bot.reply_to(message, message.text)
+@bot.message_handler(commands=['set'])
+def setgroup(message):
+    if message.from_user.language_code == "uk":
+        bot.reply_to(message, 'Напиши назву своєї групи')
+    elif message.from_user.language_code == "ru":
+        bot.reply_to(message, 'Напиши название своей группы')
+    else:
+        bot.reply_to(message, 'Write your group name')
+    bot.register_next_step_handler(message, process_group_step)
+
+
+# @bot.message_handler(func=lambda message: True, content_types=['text'])
+# def echo_message(message):
+#     bot.reply_to(message, message.text)
+
+def process_group_step(message):
+    try:
+        chat_id = message.chat.id
+        name = message.text
+        user = User(name)
+        user_dict[chat_id] = user
+        st = Student.query.filter_by(tid=message.from_user.id).first()
+        if st is None:
+            group = Group.query.filter_by(name=message.text).first()
+            get_or_create(db.session,Student,tid=message.from_user.id,defaults={'language_code':message.from_user.language_code,'group':group.id})
+        if message.from_user.language_code == "uk":
+            bot.reply_to(message, 'Група обрана')
+        elif message.from_user.language_code == "ru":
+            bot.reply_to(message, 'Группа выбрана')
+        else:
+            bot.reply_to(message, 'Group selected ')
+        # bot.register_next_step_handler(msg, process_age_step)
+    except Exception as e:
+        bot.reply_to(message, 'oooops')
 
 
 @app.route('/' + str(TOKEN), methods=['POST'])
