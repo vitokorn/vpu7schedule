@@ -95,7 +95,7 @@ def today(message):
         dt = datetime.now()
         dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)  # Returns a copy
         less = []
-        lessons = Lessons.query.filter_by(group=st.group, date=dt).order_by(Lessons.order)
+        lessons = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(Lessons.order)
         for le in lessons:
             text = f'Название предмета {le.subject}, учитель {le.teacher},аудитория {le.room},пара {le.order}'
             less.append(text)
