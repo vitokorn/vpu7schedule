@@ -126,37 +126,41 @@ def today(message):
         else:
             st = Student.query.filter_by(tid=message.from_user.id).first()
             lessons = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(Lessons.order)
-        for le in lessons:
-            start, end = None, None
-            if le.order == 1:
-                start = first_start
-                end = first_end
-            elif le.order == 2:
-                start = second_start
-                end = second_end
-            elif le.order == 3:
-                start = third_start
-                end = third_end
-            elif le.order == 4:
-                start = fourth_start
-                end = fourth_end
-            elif le.order == 5:
-                start = fifth_start
-                end = fifth_end
-            elif le.order == 6:
-                start = sixth_start
-                end = sixth_end
-            elif le.order == 7:
-                start = seventh_start
-                end = seventh_end
-            elif le.order == 8:
-                start = eighth_start
-                end = eighth_end
-            elif le.order == 9:
-                start = ninth_start
-                end = ninth_end
-            text = f'{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+        if lessons.first() is None:
+            text = "Пар нет"
             less.append(text)
+        else:
+            for le in lessons:
+                start, end = None, None
+                if le.order == 1:
+                    start = first_start
+                    end = first_end
+                elif le.order == 2:
+                    start = second_start
+                    end = second_end
+                elif le.order == 3:
+                    start = third_start
+                    end = third_end
+                elif le.order == 4:
+                    start = fourth_start
+                    end = fourth_end
+                elif le.order == 5:
+                    start = fifth_start
+                    end = fifth_end
+                elif le.order == 6:
+                    start = sixth_start
+                    end = sixth_end
+                elif le.order == 7:
+                    start = seventh_start
+                    end = seventh_end
+                elif le.order == 8:
+                    start = eighth_start
+                    end = eighth_end
+                elif le.order == 9:
+                    start = ninth_start
+                    end = ninth_end
+                text = f'{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+                less.append(text)
         if message.from_user.language_code == "uk":
             bot.reply_to(message, '\n\n'.join(less))
         elif message.from_user.language_code == "ru":
@@ -180,37 +184,41 @@ def tomorrow(message):
         else:
             st = Student.query.filter_by(tid=message.from_user.id).first()
             lessons = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(Lessons.order)
-        for le in lessons:
-            start, end = None, None
-            if le.order == 1:
-                start = first_start
-                end = first_end
-            elif le.order == 2:
-                start = second_start
-                end = second_end
-            elif le.order == 3:
-                start = third_start
-                end = third_end
-            elif le.order == 4:
-                start = fourth_start
-                end = fourth_end
-            elif le.order == 5:
-                start = fifth_start
-                end = fifth_end
-            elif le.order == 6:
-                start = sixth_start
-                end = sixth_end
-            elif le.order == 7:
-                start = seventh_start
-                end = seventh_end
-            elif le.order == 8:
-                start = eighth_start
-                end = eighth_end
-            elif le.order == 9:
-                start = ninth_start
-                end = ninth_end
-            text = f'{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+        if lessons.first() is None:
+            text = "Пар нет"
             less.append(text)
+        else:
+            for le in lessons:
+                start, end = None, None
+                if le.order == 1:
+                    start = first_start
+                    end = first_end
+                elif le.order == 2:
+                    start = second_start
+                    end = second_end
+                elif le.order == 3:
+                    start = third_start
+                    end = third_end
+                elif le.order == 4:
+                    start = fourth_start
+                    end = fourth_end
+                elif le.order == 5:
+                    start = fifth_start
+                    end = fifth_end
+                elif le.order == 6:
+                    start = sixth_start
+                    end = sixth_end
+                elif le.order == 7:
+                    start = seventh_start
+                    end = seventh_end
+                elif le.order == 8:
+                    start = eighth_start
+                    end = eighth_end
+                elif le.order == 9:
+                    start = ninth_start
+                    end = ninth_end
+                text = f'{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+                less.append(text)
         if message.from_user.language_code == "uk":
             bot.reply_to(message, '\n'.join(less))
         elif message.from_user.language_code == "ru":
@@ -244,99 +252,111 @@ def next_three_days(message):
             lessons1 = Lessons.query.filter_by(group=st.group.name, date=td).order_by(Lessons.order)
             lessons2 = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(Lessons.order)
             lessons3 = Lessons.query.filter_by(group=st.group.name, date=tdat).order_by(Lessons.order)
-        for le in lessons1:
-            start, end = None, None
-            if le.order == 1:
-                start = first_start
-                end = first_end
-            elif le.order == 2:
-                start = second_start
-                end = second_end
-            elif le.order == 3:
-                start = third_start
-                end = third_end
-            elif le.order == 4:
-                start = fourth_start
-                end = fourth_end
-            elif le.order == 5:
-                start = fifth_start
-                end = fifth_end
-            elif le.order == 6:
-                start = sixth_start
-                end = sixth_end
-            elif le.order == 7:
-                start = seventh_start
-                end = seventh_end
-            elif le.order == 8:
-                start = eighth_start
-                end = eighth_end
-            elif le.order == 9:
-                start = ninth_start
-                end = ninth_end
-            text = f'{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+        if lessons1.first() is None:
+            text = "Пар нет"
             less1.append(text)
-        for le in lessons2:
-            start, end = None, None
-            if le.order == 1:
-                start = first_start
-                end = first_end
-            elif le.order == 2:
-                start = second_start
-                end = second_end
-            elif le.order == 3:
-                start = third_start
-                end = third_end
-            elif le.order == 4:
-                start = fourth_start
-                end = fourth_end
-            elif le.order == 5:
-                start = fifth_start
-                end = fifth_end
-            elif le.order == 6:
-                start = sixth_start
-                end = sixth_end
-            elif le.order == 7:
-                start = seventh_start
-                end = seventh_end
-            elif le.order == 8:
-                start = eighth_start
-                end = eighth_end
-            elif le.order == 9:
-                start = ninth_start
-                end = ninth_end
-            text = f'{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+        else:
+            for le in lessons1:
+                start, end = None, None
+                if le.order == 1:
+                    start = first_start
+                    end = first_end
+                elif le.order == 2:
+                    start = second_start
+                    end = second_end
+                elif le.order == 3:
+                    start = third_start
+                    end = third_end
+                elif le.order == 4:
+                    start = fourth_start
+                    end = fourth_end
+                elif le.order == 5:
+                    start = fifth_start
+                    end = fifth_end
+                elif le.order == 6:
+                    start = sixth_start
+                    end = sixth_end
+                elif le.order == 7:
+                    start = seventh_start
+                    end = seventh_end
+                elif le.order == 8:
+                    start = eighth_start
+                    end = eighth_end
+                elif le.order == 9:
+                    start = ninth_start
+                    end = ninth_end
+                text = f'{td}\n{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+                less1.append(text)
+        if lessons2.first() is None:
+            text = "Пар нет"
             less2.append(text)
-        for le in lessons3:
-            start, end = None, None
-            if le.order == 1:
-                start = first_start
-                end = first_end
-            elif le.order == 2:
-                start = second_start
-                end = second_end
-            elif le.order == 3:
-                start = third_start
-                end = third_end
-            elif le.order == 4:
-                start = fourth_start
-                end = fourth_end
-            elif le.order == 5:
-                start = fifth_start
-                end = fifth_end
-            elif le.order == 6:
-                start = sixth_start
-                end = sixth_end
-            elif le.order == 7:
-                start = seventh_start
-                end = seventh_end
-            elif le.order == 8:
-                start = eighth_start
-                end = eighth_end
-            elif le.order == 9:
-                start = ninth_start
-                end = ninth_end
-            text = f'{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+        else:
+            for le in lessons2:
+                start, end = None, None
+                if le.order == 1:
+                    start = first_start
+                    end = first_end
+                elif le.order == 2:
+                    start = second_start
+                    end = second_end
+                elif le.order == 3:
+                    start = third_start
+                    end = third_end
+                elif le.order == 4:
+                    start = fourth_start
+                    end = fourth_end
+                elif le.order == 5:
+                    start = fifth_start
+                    end = fifth_end
+                elif le.order == 6:
+                    start = sixth_start
+                    end = sixth_end
+                elif le.order == 7:
+                    start = seventh_start
+                    end = seventh_end
+                elif le.order == 8:
+                    start = eighth_start
+                    end = eighth_end
+                elif le.order == 9:
+                    start = ninth_start
+                    end = ninth_end
+                text = f'{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+                less2.append(text)
+        if lessons3.first() is None:
+            text = "Пар нет"
             less3.append(text)
+        else:
+            for le in lessons3:
+                start, end = None, None
+                if le.order == 1:
+                    start = first_start
+                    end = first_end
+                elif le.order == 2:
+                    start = second_start
+                    end = second_end
+                elif le.order == 3:
+                    start = third_start
+                    end = third_end
+                elif le.order == 4:
+                    start = fourth_start
+                    end = fourth_end
+                elif le.order == 5:
+                    start = fifth_start
+                    end = fifth_end
+                elif le.order == 6:
+                    start = sixth_start
+                    end = sixth_end
+                elif le.order == 7:
+                    start = seventh_start
+                    end = seventh_end
+                elif le.order == 8:
+                    start = eighth_start
+                    end = eighth_end
+                elif le.order == 9:
+                    start = ninth_start
+                    end = ninth_end
+                text = f'{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+                less3.append(text)
         if message.from_user.language_code == "uk":
             # bot.reply_to(message, '\n'.join(less))
             bot.send_message(chat_id=message.chat.id,text='\n'.join(less1))
