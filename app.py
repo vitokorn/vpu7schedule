@@ -239,7 +239,8 @@ def next_three_days(message):
         dt = datetime.now() + timedelta(days=1)
         dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)
         tdat = datetime.now() + timedelta(days=2)
-        tdat = dt.replace(hour=12, minute=0, second=0, microsecond=0)
+        tdat = tdat.replace(hour=12, minute=0, second=0, microsecond=0)
+
         less1 = []
         less2 = []
         less3 = []
@@ -500,9 +501,8 @@ def sync():
         for d in res3:
             print(d)
             parseddate = datetime.strptime(d['date'], '%Y-%m-%dT%H:%M:%S.%fZ')
-            if d['room']:
-                if 'name' in d['room']:
-                    room = d['room']['name']
+            if d['room'] and d['room']['name']:
+                room = d['room']['name']
             else:
                 room = None
             if d['teacher'] and d['teacher']['name']:
@@ -512,6 +512,8 @@ def sync():
             lessons, create = get_or_create(db.session, Lessons, room=room, subject=d['subject']['name'],
                                             teacher=teacher, date=parseddate, group=d['group']['name'],
                                             order=d['order'])
+    result = {'sync': 'ok'}
+    return result, 200
 
 
 def get_or_create(session, model, defaults=None, **kwargs):
