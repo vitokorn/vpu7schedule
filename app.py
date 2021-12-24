@@ -152,7 +152,7 @@ def today(message):
             elif le.order == 9:
                 start = ninth_start
                 end = ninth_end
-            text = f'{le.order:^10 Пара}\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+            text = f'{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
             less.append(text)
         if message.from_user.language_code == "uk":
             bot.reply_to(message, '\n\n'.join(less))
