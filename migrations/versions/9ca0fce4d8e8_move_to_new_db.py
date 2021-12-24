@@ -1,8 +1,8 @@
-"""Initial migration.
+"""move to new db
 
-Revision ID: 69a6a5075872
+Revision ID: 9ca0fce4d8e8
 Revises: 
-Create Date: 2021-12-24 09:51:00.416308
+Create Date: 2021-12-24 11:10:10.954952
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '69a6a5075872'
+revision = '9ca0fce4d8e8'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -32,7 +32,7 @@ def upgrade():
     sa.Column('teacher', sa.String(), nullable=True),
     sa.Column('date', sa.DateTime(), nullable=True),
     sa.Column('group', sa.String(), nullable=True),
-    sa.Column('order', sa.String(), nullable=True),
+    sa.Column('order', sa.Integer(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_lessons_id'), 'lessons', ['id'], unique=False)
@@ -40,7 +40,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('first_name', sa.String(), nullable=True),
     sa.Column('username', sa.String(), nullable=True),
-    sa.Column('last_name', sa.String(), nullable=True),
+    sa.Column('tid', sa.Integer(), nullable=True),
     sa.Column('language_code', sa.String(), nullable=True),
     sa.Column('group', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['group'], ['group.id'], ondelete='CASCADE'),

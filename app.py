@@ -157,8 +157,9 @@ def sync():
         for d in res3:
             print(d)
             parseddate = datetime.strptime(d['date'], '%Y-%m-%dT%H:%M:%S.%fZ')
-            if 'name' in d['room']:
-                room = d['room']['name']
+            if d['room']:
+                if 'name' in d['room']:
+                    room = d['room']['name']
             else:
                 room = None
             lessons, create = get_or_create(db.session, Lessons, room=room, subject=d['subject']['name'],teacher=d['teacher']['name'],date=parseddate,group=d['group']['name'],order=d['order'])
