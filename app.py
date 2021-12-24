@@ -88,6 +88,8 @@ user_dict = {}
 
 
 def aggregatio(lessons,less,dt):
+    date = f'{dt.strftime("%d-%m-%Y")}\n'
+    less.append(date)
     for le in lessons:
         start, end = None, None
         if le.order == 1:
@@ -117,7 +119,7 @@ def aggregatio(lessons,less,dt):
         elif le.order == 9:
             start = ninth_start
             end = ninth_end
-        text = f'{dt.strftime("%d-%m-%Y")}\n{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+        text = f'{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
         less.append(text)
     return less
 
@@ -331,17 +333,17 @@ def week(message):
             less3 = aggregatio(lessons3, less3, wednesday)
         if lessons4.first() is None:
             text = f'{thursday.strftime("%d-%m-%Y")}\nПар нет'
-            less1.append(text)
+            less4.append(text)
         else:
-            less1 = aggregatio(lessons4, less4, thursday)
+            less4 = aggregatio(lessons4, less4, thursday)
         if lessons5.first() is None:
             text = f'{friday.strftime("%d-%m-%Y")}\nПар нет'
-            less2.append(text)
+            less5.append(text)
         else:
-            less2 = aggregatio(lessons5, less5, friday)
+            less5 = aggregatio(lessons5, less5, friday)
         if lessons6.first() is None:
             text = f'{friday.strftime("%d-%m-%Y")}\nПар нет'
-            less3.append(sunday)
+            less6.append(text)
         else:
             less3 = aggregatio(lessons6, less6, sunday)
         if message.from_user.language_code == "uk":
