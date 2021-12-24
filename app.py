@@ -87,6 +87,40 @@ class User:
 user_dict = {}
 
 
+def aggregatio(lessons,less,dt):
+    for le in lessons:
+        start, end = None, None
+        if le.order == 1:
+            start = first_start
+            end = first_end
+        elif le.order == 2:
+            start = second_start
+            end = second_end
+        elif le.order == 3:
+            start = third_start
+            end = third_end
+        elif le.order == 4:
+            start = fourth_start
+            end = fourth_end
+        elif le.order == 5:
+            start = fifth_start
+            end = fifth_end
+        elif le.order == 6:
+            start = sixth_start
+            end = sixth_end
+        elif le.order == 7:
+            start = seventh_start
+            end = seventh_end
+        elif le.order == 8:
+            start = eighth_start
+            end = eighth_end
+        elif le.order == 9:
+            start = ninth_start
+            end = ninth_end
+        text = f'{dt.strftime("%d-%m-%Y")}\n{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+        less.append(text)
+    return less
+
 def extract_arg(arg):
     return arg.split()[1:]
 
@@ -130,37 +164,7 @@ def today(message):
             text = f'{dt.strftime("%d-%m-%Y")}\nПар нет'
             less.append(text)
         else:
-            for le in lessons:
-                start, end = None, None
-                if le.order == 1:
-                    start = first_start
-                    end = first_end
-                elif le.order == 2:
-                    start = second_start
-                    end = second_end
-                elif le.order == 3:
-                    start = third_start
-                    end = third_end
-                elif le.order == 4:
-                    start = fourth_start
-                    end = fourth_end
-                elif le.order == 5:
-                    start = fifth_start
-                    end = fifth_end
-                elif le.order == 6:
-                    start = sixth_start
-                    end = sixth_end
-                elif le.order == 7:
-                    start = seventh_start
-                    end = seventh_end
-                elif le.order == 8:
-                    start = eighth_start
-                    end = eighth_end
-                elif le.order == 9:
-                    start = ninth_start
-                    end = ninth_end
-                text = f'{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
-                less.append(text)
+            less = aggregatio(lessons, less, dt)
         if message.from_user.language_code == "uk":
             bot.reply_to(message, '\n\n'.join(less))
         elif message.from_user.language_code == "ru":
@@ -169,6 +173,12 @@ def today(message):
             bot.reply_to(message, '\n\n'.join(less))
     except:
         print(traceback.format_exc())
+        if message.from_user.language_code == "uk":
+            bot.send_message(chat_id=message.chat.id,text='Виникла помилка')
+        elif message.from_user.language_code == "ru":
+            bot.send_message(chat_id=message.chat.id,text='Произошла ошибка')
+        else:
+            bot.send_message(chat_id=message.chat.id,text='An error has occurred')
 
 
 @bot.message_handler(commands=['tomorrow'])
@@ -188,37 +198,7 @@ def tomorrow(message):
             text = f'{dt.strftime("%d-%m-%Y")}\nПар нет'
             less.append(text)
         else:
-            for le in lessons:
-                start, end = None, None
-                if le.order == 1:
-                    start = first_start
-                    end = first_end
-                elif le.order == 2:
-                    start = second_start
-                    end = second_end
-                elif le.order == 3:
-                    start = third_start
-                    end = third_end
-                elif le.order == 4:
-                    start = fourth_start
-                    end = fourth_end
-                elif le.order == 5:
-                    start = fifth_start
-                    end = fifth_end
-                elif le.order == 6:
-                    start = sixth_start
-                    end = sixth_end
-                elif le.order == 7:
-                    start = seventh_start
-                    end = seventh_end
-                elif le.order == 8:
-                    start = eighth_start
-                    end = eighth_end
-                elif le.order == 9:
-                    start = ninth_start
-                    end = ninth_end
-                text = f'{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
-                less.append(text)
+            less = aggregatio(lessons,less,dt)
         if message.from_user.language_code == "uk":
             bot.reply_to(message, '\n'.join(less))
         elif message.from_user.language_code == "ru":
@@ -227,6 +207,12 @@ def tomorrow(message):
             bot.reply_to(message, '\n'.join(less))
     except:
         print(traceback.format_exc())
+        if message.from_user.language_code == "uk":
+            bot.send_message(chat_id=message.chat.id,text='Виникла помилка')
+        elif message.from_user.language_code == "ru":
+            bot.send_message(chat_id=message.chat.id,text='Произошла ошибка')
+        else:
+            bot.send_message(chat_id=message.chat.id,text='An error has occurred')
 
 
 @bot.message_handler(commands=['next_three_days'])
@@ -257,107 +243,17 @@ def next_three_days(message):
             text = f'{td.strftime("%d-%m-%Y")}\nПар нет'
             less1.append(text)
         else:
-            for le in lessons1:
-                start, end = None, None
-                if le.order == 1:
-                    start = first_start
-                    end = first_end
-                elif le.order == 2:
-                    start = second_start
-                    end = second_end
-                elif le.order == 3:
-                    start = third_start
-                    end = third_end
-                elif le.order == 4:
-                    start = fourth_start
-                    end = fourth_end
-                elif le.order == 5:
-                    start = fifth_start
-                    end = fifth_end
-                elif le.order == 6:
-                    start = sixth_start
-                    end = sixth_end
-                elif le.order == 7:
-                    start = seventh_start
-                    end = seventh_end
-                elif le.order == 8:
-                    start = eighth_start
-                    end = eighth_end
-                elif le.order == 9:
-                    start = ninth_start
-                    end = ninth_end
-                text = f'{td.strftime("%d-%m-%Y")}\n{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
-                less1.append(text)
+            less1 = aggregatio(lessons1, less1, td)
         if lessons2.first() is None:
             text = f'{dt.strftime("%d-%m-%Y")}\nПар нет'
             less2.append(text)
         else:
-            for le in lessons2:
-                start, end = None, None
-                if le.order == 1:
-                    start = first_start
-                    end = first_end
-                elif le.order == 2:
-                    start = second_start
-                    end = second_end
-                elif le.order == 3:
-                    start = third_start
-                    end = third_end
-                elif le.order == 4:
-                    start = fourth_start
-                    end = fourth_end
-                elif le.order == 5:
-                    start = fifth_start
-                    end = fifth_end
-                elif le.order == 6:
-                    start = sixth_start
-                    end = sixth_end
-                elif le.order == 7:
-                    start = seventh_start
-                    end = seventh_end
-                elif le.order == 8:
-                    start = eighth_start
-                    end = eighth_end
-                elif le.order == 9:
-                    start = ninth_start
-                    end = ninth_end
-                text = f'{dt.strftime("%d-%m-%Y")}\n{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
-                less2.append(text)
+            less2 = aggregatio(lessons2, less2, dt)
         if lessons3.first() is None:
             text = f'{tdat.strftime("%d-%m-%Y")}\nПар нет'
             less3.append(text)
         else:
-            for le in lessons3:
-                start, end = None, None
-                if le.order == 1:
-                    start = first_start
-                    end = first_end
-                elif le.order == 2:
-                    start = second_start
-                    end = second_end
-                elif le.order == 3:
-                    start = third_start
-                    end = third_end
-                elif le.order == 4:
-                    start = fourth_start
-                    end = fourth_end
-                elif le.order == 5:
-                    start = fifth_start
-                    end = fifth_end
-                elif le.order == 6:
-                    start = sixth_start
-                    end = sixth_end
-                elif le.order == 7:
-                    start = seventh_start
-                    end = seventh_end
-                elif le.order == 8:
-                    start = eighth_start
-                    end = eighth_end
-                elif le.order == 9:
-                    start = ninth_start
-                    end = ninth_end
-                text = f'{tdat.strftime("%d-%m-%Y")}\n{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
-                less3.append(text)
+            less3 = aggregatio(lessons3, less3, tdat)
         if message.from_user.language_code == "uk":
             # bot.reply_to(message, '\n'.join(less))
             bot.send_message(chat_id=message.chat.id,text='\n\n'.join(less1))
@@ -373,6 +269,111 @@ def next_three_days(message):
             bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less3))
     except:
         print(traceback.format_exc())
+        if message.from_user.language_code == "uk":
+            bot.send_message(chat_id=message.chat.id,text='Виникла помилка')
+        elif message.from_user.language_code == "ru":
+            bot.send_message(chat_id=message.chat.id,text='Произошла ошибка')
+        else:
+            bot.send_message(chat_id=message.chat.id,text='An error has occurred')
+
+
+@bot.message_handler(commands=['week'])
+def week(message):
+    try:
+        args = extract_arg(message.text)
+        st = Student.query.filter_by(tid=message.from_user.id).first()
+        dt = datetime.now()
+        dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)
+
+        mnd = dt - timedelta(days=dt.weekday())
+        monday = (dt - timedelta(days=dt.weekday()))
+        tuesday = (mnd + timedelta(days=1))
+        wednesday = (mnd + timedelta(days=2))
+        thursday = (mnd + timedelta(days=3))
+        friday = (mnd + timedelta(days=4))
+        sunday = (mnd + timedelta(days=5))
+
+        less1 = []
+        less2 = []
+        less3 = []
+        less4 = []
+        less5 = []
+        less6 = []
+        if len(args) > 0:
+            lessons1 = Lessons.query.filter_by(group=''.join(args), date=monday).order_by(Lessons.order)
+            lessons2 = Lessons.query.filter_by(group=''.join(args), date=tuesday).order_by(Lessons.order)
+            lessons3 = Lessons.query.filter_by(group=''.join(args), date=wednesday).order_by(Lessons.order)
+            lessons4 = Lessons.query.filter_by(group=''.join(args), date=thursday).order_by(Lessons.order)
+            lessons5 = Lessons.query.filter_by(group=''.join(args), date=friday).order_by(Lessons.order)
+            lessons6 = Lessons.query.filter_by(group=''.join(args), date=sunday).order_by(Lessons.order)
+        else:
+            st = Student.query.filter_by(tid=message.from_user.id).first()
+            lessons1 = Lessons.query.filter_by(group=st.group.name, date=monday).order_by(Lessons.order)
+            lessons2 = Lessons.query.filter_by(group=st.group.name, date=tuesday).order_by(Lessons.order)
+            lessons3 = Lessons.query.filter_by(group=st.group.name, date=wednesday).order_by(Lessons.order)
+            lessons4 = Lessons.query.filter_by(group=st.group.name, date=thursday).order_by(Lessons.order)
+            lessons5 = Lessons.query.filter_by(group=st.group.name, date=friday).order_by(Lessons.order)
+            lessons6 = Lessons.query.filter_by(group=st.group.name, date=sunday).order_by(Lessons.order)
+        if lessons1.first() is None:
+            text = f'{monday.strftime("%d-%m-%Y")}\nПар нет'
+            less1.append(text)
+        else:
+            less1 = aggregatio(lessons1, less1, monday)
+        if lessons2.first() is None:
+            text = f'{tuesday.strftime("%d-%m-%Y")}\nПар нет'
+            less2.append(text)
+        else:
+            less2 = aggregatio(lessons2, less2, tuesday)
+        if lessons3.first() is None:
+            text = f'{wednesday.strftime("%d-%m-%Y")}\nПар нет'
+            less3.append(text)
+        else:
+            less3 = aggregatio(lessons3, less3, wednesday)
+        if lessons4.first() is None:
+            text = f'{thursday.strftime("%d-%m-%Y")}\nПар нет'
+            less1.append(text)
+        else:
+            less1 = aggregatio(lessons4, less4, thursday)
+        if lessons5.first() is None:
+            text = f'{friday.strftime("%d-%m-%Y")}\nПар нет'
+            less2.append(text)
+        else:
+            less2 = aggregatio(lessons5, less5, friday)
+        if lessons6.first() is None:
+            text = f'{friday.strftime("%d-%m-%Y")}\nПар нет'
+            less3.append(sunday)
+        else:
+            less3 = aggregatio(lessons6, less6, sunday)
+        if message.from_user.language_code == "uk":
+            # bot.reply_to(message, '\n'.join(less))
+            bot.send_message(chat_id=message.chat.id,text='\n\n'.join(less1))
+            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less2))
+            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less3))
+            bot.send_message(chat_id=message.chat.id,text='\n\n'.join(less4))
+            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less5))
+            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less6))
+        elif message.from_user.language_code == "ru":
+            bot.send_message(chat_id=message.chat.id,text='\n\n'.join(less1))
+            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less2))
+            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less3))
+            bot.send_message(chat_id=message.chat.id,text='\n\n'.join(less4))
+            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less5))
+            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less6))
+        else:
+            bot.send_message(chat_id=message.chat.id,text='\n\n'.join(less1))
+            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less2))
+            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less3))
+            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less4))
+            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less5))
+            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less6))
+    except:
+        print(traceback.format_exc())
+        if message.from_user.language_code == "uk":
+            bot.send_message(chat_id=message.chat.id,text='Виникла помилка')
+        elif message.from_user.language_code == "ru":
+            bot.send_message(chat_id=message.chat.id,text='Произошла ошибка')
+        else:
+            bot.send_message(chat_id=message.chat.id,text='An error has occurred')
 
 
 @bot.message_handler(commands=['calls'])
@@ -445,6 +446,13 @@ def process_group_step(message):
             st.first_name = message.from_user.first_name
             st.username = message.from_user.username
             db.session.commit()
+        if Group.query.filter_by(name=message.text).first() is None:
+            if message.from_user.language_code == "uk":
+                bot.reply_to(message, 'Такої групи не існує ')
+            elif message.from_user.language_code == "ru":
+                bot.reply_to(message, 'There is no such group')
+            else:
+                bot.reply_to(message, 'Group selected ')
         if message.from_user.language_code == "uk":
             bot.reply_to(message, 'Група обрана')
         elif message.from_user.language_code == "ru":
