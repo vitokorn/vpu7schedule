@@ -482,6 +482,9 @@ def sync():
         group, create = get_or_create(db.session, Group, uid=r['_id'], name=r['name'])
 
     dt = datetime.today()
+    if dt.isoweekday() == 7:
+        db.session.query(Lessons).filter(Lessons.date <= dt).delete()
+        db.session.commit()
     mnd = dt - timedelta(days=dt.weekday())
     monday = (dt - timedelta(days=dt.weekday())).strftime("%Y-%m-%d")
     sunday = (mnd + timedelta(days=5)).strftime("%Y-%m-%d")
