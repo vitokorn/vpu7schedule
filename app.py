@@ -277,7 +277,21 @@ def tomorrow(message):
 def next_three_days(message):
     try:
         if message.text == "Розклад на три дні" or message.text == "Расписание на три дня" or message.text == "Schedule for three days":
-            args = ""
+            if message.from_user.language_code == "uk":
+                try:
+                    args = message.text.split('Розклад на три дні ')[1]
+                except:
+                    args = ""
+            elif message.from_user.language_code == "ru":
+                try:
+                    args = message.text.split('Расписание на три дня ')[1]
+                except:
+                    args = ""
+            else:
+                try:
+                    args = message.text.split('Schedule for three days ')[1]
+                except:
+                    args = ""
         else:
             args = extract_arg(message.text)
         st = Student.query.filter_by(tid=message.from_user.id).first()
