@@ -276,7 +276,7 @@ def tomorrow(message):
 @bot.message_handler(commands=['next_three_days'])
 def next_three_days(message):
     try:
-        if message.text == "Розклад на три дні" or message.text == "Расписание на три дня" or message.text == "Schedule for three days":
+        if message.text.startswith == "Розклад на три дні" or message.text.startswith == "Расписание на три дня" or message.text.startswith == "Schedule for three days":
             if message.from_user.language_code == "uk":
                 try:
                     args = message.text.split('Розклад на три дні ')[1]
