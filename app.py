@@ -126,6 +126,7 @@ def aggregatio(lessons,less,dt):
         less.append(text)
     return less
 
+
 def extract_arg(arg):
     return arg.split()[1:]
 
@@ -133,12 +134,43 @@ def extract_arg(arg):
 @bot.message_handler(commands=['start'])
 def start(message):
     print(message.from_user)
-    if message.from_user.language_code == "uk":
-        bot.reply_to(message, 'Привiт, ' + message.from_user.first_name)
-    elif message.from_user.language_code == "ru":
-        bot.reply_to(message, 'Привет, ' + message.from_user.first_name)
+    st = Student.query.filter_by(tid=message.from_user.id).first()
+    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
+    if st is None:
+        text = ""
+        if message.from_user.language_code == "uk":
+            item1 = telebot.types.KeyboardButton("Вибрати групу")
+            markup.add(item1)
+            text = 'Привiт, '
+        elif message.from_user.language_code == "ru":
+            item1 = telebot.types.KeyboardButton("Выбрать группу")
+            markup.add(item1)
+            text = 'Привет, '
+        else:
+            item1 = telebot.types.KeyboardButton("Set group")
+            markup.add(item1)
+            text = 'Hello, '
+        text += message.from_user.first_name
+        bot.send_message(chat_id=message.chat.id, text=text, reply_markup=markup)
     else:
-        bot.reply_to(message, 'Hello, ' + message.from_user.first_name)
+        if message.from_user.language_code == "uk":
+            item1 = telebot.types.KeyboardButton("Розклад на сьогодні")
+            item2 = telebot.types.KeyboardButton("Розклад на завтра")
+            item3 = telebot.types.KeyboardButton("Розклад на три дні")
+            item4 = telebot.types.KeyboardButton("Розклад на тиждень ")
+            item5 = telebot.types.KeyboardButton("Розклад дзвінків")
+            markup.add(item1, item2, item3, item4, item5)
+            bot.send_message(chat_id=message.chat.id, text='Привiт, ' + message.from_user.first_name,reply_markup=markup)
+        elif message.from_user.language_code == "ru":
+            item1 = telebot.types.KeyboardButton("Расписание на сегодня")
+            item2 = telebot.types.KeyboardButton("Расписание на завтра")
+            item3 = telebot.types.KeyboardButton("Расписание на три дня")
+            item4 = telebot.types.KeyboardButton("Расписание на неделю")
+            item5 = telebot.types.KeyboardButton("Расписание звонков")
+            markup.add(item1,item2,item3,item4,item5)
+            bot.send_message(chat_id=message.chat.id, text='Привет, ' + message.from_user.first_name,reply_markup=markup)
+        else:
+            bot.reply_to(message, 'Hello, ' + message.from_user.first_name)
 
 
 @bot.message_handler(commands=['set'])
@@ -428,12 +460,22 @@ def calls(message):
 
 @bot.message_handler(commands=['help'])
 def help(message):
-    msg = f'Команды: /today, /tomorrow, /next_three_days, /week, /nextweek, предназначены для получения расписания на определенное к-во дней. Имеют две формы:\n 1. Исходная (/today) – предназначена для получения расписания пользователю, который был ранее зарегистрирован.\n2. Дополненная (/today О1-20) – предназначена для получения расписания для произвольной группы (не требует регистрацию).\nДля регистрации необходимо ввести команду /set и в следующем сообщении указать свою группу.\n'
+    msg = f'Команды: /today, /tomorrow, /next_three_days, /week, предназначены для получения расписания на определенное к-во дней. Имеют две формы:\n 1. Исходная (/today) – предназначена для получения расписания пользователю, который был ранее зарегистрирован.\n2. Дополненная (/today О1-20) – предназначена для получения расписания для произвольной группы (не требует регистрацию).\nДля регистрации необходимо ввести команду /set и в следующем сообщении указать свою группу.\n'
     bot.send_message(message.chat.id, msg)
 
-# @bot.message_handler(func=lambda message: True, content_types=['text'])
-# def echo_message(message):
-#     bot.reply_to(message, message.text)
+
+@bot.message_handler(func=lambda message: True, content_types=['text'])
+def echo_message(message):
+    if message.text == "Розклад на сьогодні" or message.text == "Расписание на сегодня":
+        today(message)
+    elif message.text == "Розклад на завтра" or message.text == "Расписание на завтра":
+        tomorrow(message)
+    elif message.text == "Розклад на три дні" or message.text == "Расписание на три дня":
+        next_three_days(message)
+    elif message.text == "Розклад на тиждень" or message.text == "Расписание на неделю":
+        week(message)
+    elif message.text == "Розклад дзвінків" or message.text == "Расписание звонков":
+        calls(message)
 
 
 def process_group_step(message):
