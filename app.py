@@ -159,7 +159,8 @@ def start(message):
             item3 = telebot.types.KeyboardButton("Розклад на три дні")
             item4 = telebot.types.KeyboardButton("Розклад на тиждень ")
             item5 = telebot.types.KeyboardButton("Розклад дзвінків")
-            markup.add(item1, item2, item3, item4, item5)
+            item6 = telebot.types.KeyboardButton("Змінити групу")
+            markup.add(item1, item2, item3, item4, item5,item6)
             bot.send_message(chat_id=message.chat.id, text='Привiт, ' + message.from_user.first_name,reply_markup=markup)
         elif message.from_user.language_code == "ru":
             item1 = telebot.types.KeyboardButton("Расписание на сегодня")
@@ -167,7 +168,8 @@ def start(message):
             item3 = telebot.types.KeyboardButton("Расписание на три дня")
             item4 = telebot.types.KeyboardButton("Расписание на неделю")
             item5 = telebot.types.KeyboardButton("Расписание звонков")
-            markup.add(item1,item2,item3,item4,item5)
+            item6 = telebot.types.KeyboardButton("Сменить группу")
+            markup.add(item1,item2,item3,item4,item5,item6)
             bot.send_message(chat_id=message.chat.id, text='Привет, ' + message.from_user.first_name,reply_markup=markup)
         else:
             bot.reply_to(message, 'Hello, ' + message.from_user.first_name)
@@ -291,19 +293,9 @@ def next_three_days(message):
             less3.append(text)
         else:
             less3 = aggregatio(lessons3, less3, tdat)
-        if message.from_user.language_code == "uk":
-            # bot.reply_to(message, '\n'.join(less))
-            bot.send_message(chat_id=message.chat.id,text='\n\n'.join(less1))
-            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less2))
-            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less3))
-        elif message.from_user.language_code == "ru":
-            bot.send_message(chat_id=message.chat.id,text='\n\n'.join(less1))
-            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less2))
-            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less3))
-        else:
-            bot.send_message(chat_id=message.chat.id,text='\n\n'.join(less1))
-            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less2))
-            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less3))
+        bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less1))
+        bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less2))
+        bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less3))
     except:
         print(traceback.format_exc())
         if message.from_user.language_code == "uk":
@@ -381,28 +373,13 @@ def week(message):
             less6.append(text)
         else:
             less3 = aggregatio(lessons6, less6, sunday)
-        if message.from_user.language_code == "uk":
             # bot.reply_to(message, '\n'.join(less))
-            bot.send_message(chat_id=message.chat.id,text='\n\n'.join(less1))
-            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less2))
-            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less3))
-            bot.send_message(chat_id=message.chat.id,text='\n\n'.join(less4))
-            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less5))
-            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less6))
-        elif message.from_user.language_code == "ru":
-            bot.send_message(chat_id=message.chat.id,text='\n\n'.join(less1))
-            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less2))
-            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less3))
-            bot.send_message(chat_id=message.chat.id,text='\n\n'.join(less4))
-            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less5))
-            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less6))
-        else:
-            bot.send_message(chat_id=message.chat.id,text='\n\n'.join(less1))
-            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less2))
-            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less3))
-            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less4))
-            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less5))
-            bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less6))
+        bot.send_message(chat_id=message.chat.id,text='\n\n'.join(less1))
+        bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less2))
+        bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less3))
+        bot.send_message(chat_id=message.chat.id,text='\n\n'.join(less4))
+        bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less5))
+        bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less6))
     except:
         print(traceback.format_exc())
         if message.from_user.language_code == "uk":
@@ -476,6 +453,8 @@ def echo_message(message):
         week(message)
     elif message.text == "Розклад дзвінків" or message.text == "Расписание звонков":
         calls(message)
+    elif message.text == "Змінити групу" or message.text == "Сменить группу":
+        setgroup(message)
 
 
 def process_group_step(message):
