@@ -88,7 +88,7 @@ user_dict = {}
 
 
 def aggregatio(lessons,less,dt):
-    date = f'{dt.strftime("%d-%m-%Y")}\n'
+    date = f'{dt.strftime("%d.%m.%Y")}\n'
     less.append(date)
     for le in lessons:
         start, end = None, None
@@ -160,7 +160,8 @@ def start(message):
             item4 = telebot.types.KeyboardButton("Розклад на тиждень ")
             item5 = telebot.types.KeyboardButton("Розклад дзвінків")
             item6 = telebot.types.KeyboardButton("Змінити групу")
-            markup.add(item1, item2, item3, item4, item5,item6)
+            item7 = telebot.types.KeyboardButton("Як користуватися ботом")
+            markup.add(item1, item2, item3, item4, item5,item6,item7)
             bot.send_message(chat_id=message.chat.id, text='Привiт, ' + message.from_user.first_name,reply_markup=markup)
         elif message.from_user.language_code == "ru":
             item1 = telebot.types.KeyboardButton("Расписание на сегодня")
@@ -169,9 +170,18 @@ def start(message):
             item4 = telebot.types.KeyboardButton("Расписание на неделю")
             item5 = telebot.types.KeyboardButton("Расписание звонков")
             item6 = telebot.types.KeyboardButton("Сменить группу")
-            markup.add(item1,item2,item3,item4,item5,item6)
+            item7 = telebot.types.KeyboardButton("Как пользоваться ботом")
+            markup.add(item1,item2,item3,item4,item5,item6,item7)
             bot.send_message(chat_id=message.chat.id, text='Привет, ' + message.from_user.first_name,reply_markup=markup)
         else:
+            item1 = telebot.types.KeyboardButton("Schedule for today")
+            item2 = telebot.types.KeyboardButton("Schedule for tomorrow")
+            item3 = telebot.types.KeyboardButton("Schedule for three days")
+            item4 = telebot.types.KeyboardButton("Week schedule")
+            item5 = telebot.types.KeyboardButton("Call Schedule")
+            item6 = telebot.types.KeyboardButton("Change group")
+            item7 = telebot.types.KeyboardButton("How to use the bot")
+            markup.add(item1,item2,item3,item4,item5,item6,item7)
             bot.reply_to(message, 'Hello, ' + message.from_user.first_name)
 
 
@@ -200,7 +210,7 @@ def today(message):
             st = Student.query.filter_by(tid=message.from_user.id).first()
             lessons = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(Lessons.order)
         if lessons.first() is None:
-            text = f'{dt.strftime("%d-%m-%Y")}\nПар нет'
+            text = f'{dt.strftime("%d.%m.%Y")}\nПар нет'
             less.append(text)
         else:
             less = aggregatio(lessons, less, dt)
@@ -234,7 +244,7 @@ def tomorrow(message):
             st = Student.query.filter_by(tid=message.from_user.id).first()
             lessons = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(Lessons.order)
         if lessons.first() is None:
-            text = f'{dt.strftime("%d-%m-%Y")}\nПар нет'
+            text = f'{dt.strftime("%d.%m.%Y")}\nПар нет'
             less.append(text)
         else:
             less = aggregatio(lessons,less,dt)
@@ -279,17 +289,17 @@ def next_three_days(message):
             lessons2 = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(Lessons.order)
             lessons3 = Lessons.query.filter_by(group=st.group.name, date=tdat).order_by(Lessons.order)
         if lessons1.first() is None:
-            text = f'{td.strftime("%d-%m-%Y")}\nПар нет'
+            text = f'{td.strftime("%d.%m.%Y")}\nПар нет'
             less1.append(text)
         else:
             less1 = aggregatio(lessons1, less1, td)
         if lessons2.first() is None:
-            text = f'{dt.strftime("%d-%m-%Y")}\nПар нет'
+            text = f'{dt.strftime("%d.%m.%Y")}\nПар нет'
             less2.append(text)
         else:
             less2 = aggregatio(lessons2, less2, dt)
         if lessons3.first() is None:
-            text = f'{tdat.strftime("%d-%m-%Y")}\nПар нет'
+            text = f'{tdat.strftime("%d.%m.%Y")}\nПар нет'
             less3.append(text)
         else:
             less3 = aggregatio(lessons3, less3, tdat)
@@ -344,32 +354,32 @@ def week(message):
             lessons5 = Lessons.query.filter_by(group=st.group.name, date=friday).order_by(Lessons.order)
             lessons6 = Lessons.query.filter_by(group=st.group.name, date=sunday).order_by(Lessons.order)
         if lessons1.first() is None:
-            text = f'{monday.strftime("%d-%m-%Y")}\nПар нет'
+            text = f'{monday.strftime("%d.%m.%Y")}\nПар нет'
             less1.append(text)
         else:
             less1 = aggregatio(lessons1, less1, monday)
         if lessons2.first() is None:
-            text = f'{tuesday.strftime("%d-%m-%Y")}\nПар нет'
+            text = f'{tuesday.strftime("%d.%m.%Y")}\nПар нет'
             less2.append(text)
         else:
             less2 = aggregatio(lessons2, less2, tuesday)
         if lessons3.first() is None:
-            text = f'{wednesday.strftime("%d-%m-%Y")}\nПар нет'
+            text = f'{wednesday.strftime("%d.%m.%Y")}\nПар нет'
             less3.append(text)
         else:
             less3 = aggregatio(lessons3, less3, wednesday)
         if lessons4.first() is None:
-            text = f'{thursday.strftime("%d-%m-%Y")}\nПар нет'
+            text = f'{thursday.strftime("%d.%m.%Y")}\nПар нет'
             less4.append(text)
         else:
             less4 = aggregatio(lessons4, less4, thursday)
         if lessons5.first() is None:
-            text = f'{friday.strftime("%d-%m-%Y")}\nПар нет'
+            text = f'{friday.strftime("%d.%m.%Y")}\nПар нет'
             less5.append(text)
         else:
             less5 = aggregatio(lessons5, less5, friday)
         if lessons6.first() is None:
-            text = f'{sunday.strftime("%d-%m-%Y")}\nПар нет'
+            text = f'{sunday.strftime("%d.%m.%Y")}\nПар нет'
             less6.append(text)
         else:
             less3 = aggregatio(lessons6, less6, sunday)
@@ -443,18 +453,20 @@ def help(message):
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def echo_message(message):
-    if message.text == "Розклад на сьогодні" or message.text == "Расписание на сегодня":
+    if message.text == "Розклад на сьогодні" or message.text == "Расписание на сегодня" or message.text == "Schedule for today":
         today(message)
-    elif message.text == "Розклад на завтра" or message.text == "Расписание на завтра":
+    elif message.text == "Розклад на завтра" or message.text == "Расписание на завтра" or message.text == "Schedule for tomorrow":
         tomorrow(message)
-    elif message.text == "Розклад на три дні" or message.text == "Расписание на три дня":
+    elif message.text == "Розклад на три дні" or message.text == "Расписание на три дня" or message.text == "Schedule for three days":
         next_three_days(message)
-    elif message.text == "Розклад на тиждень" or message.text == "Расписание на неделю":
+    elif message.text == "Розклад на тиждень" or message.text == "Расписание на неделю" or message.text == "Week schedule":
         week(message)
-    elif message.text == "Розклад дзвінків" or message.text == "Расписание звонков":
+    elif message.text == "Розклад дзвінків" or message.text == "Расписание звонков" or message.text == "Call Schedule":
         calls(message)
-    elif message.text == "Змінити групу" or message.text == "Сменить группу":
+    elif message.text == "Змінити групу" or message.text == "Сменить группу" or message.text == "Change group":
         setgroup(message)
+    elif message.text == "Як користуватися ботом" or message.text == "Как пользоваться ботом" or message.text == "How to use the bot":
+        help(message)
 
 
 def process_group_step(message):
