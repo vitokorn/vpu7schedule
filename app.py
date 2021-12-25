@@ -485,7 +485,7 @@ def process_group_step(message):
                                     'language_code': message.from_user.language_code, 'group': group})
         else:
             group = Group.query.filter_by(name=message.text).first()
-            st.group = group.id
+            st.group = group
             st.first_name = message.from_user.first_name
             st.username = message.from_user.username
             db.session.commit()
