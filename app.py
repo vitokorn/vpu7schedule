@@ -140,15 +140,18 @@ def start(message):
         text = ""
         if message.from_user.language_code == "uk":
             item1 = telebot.types.KeyboardButton("Вибрати групу")
-            markup.add(item1)
+            item2 = telebot.types.KeyboardButton("Як користуватися ботом")
+            markup.add(item1,item2)
             text = 'Привiт, '
         elif message.from_user.language_code == "ru":
             item1 = telebot.types.KeyboardButton("Выбрать группу")
-            markup.add(item1)
+            item2 = telebot.types.KeyboardButton("Как пользоваться ботом")
+            markup.add(item1,item2)
             text = 'Привет, '
         else:
             item1 = telebot.types.KeyboardButton("Set group")
-            markup.add(item1)
+            item2 = telebot.types.KeyboardButton("How to use a bot")
+            markup.add(item1,item2)
             text = 'Hello, '
         text += message.from_user.first_name
         bot.send_message(chat_id=message.chat.id, text=text, reply_markup=markup)
@@ -180,7 +183,7 @@ def start(message):
             item4 = telebot.types.KeyboardButton("Week schedule")
             item5 = telebot.types.KeyboardButton("Call Schedule")
             item6 = telebot.types.KeyboardButton("Change group")
-            item7 = telebot.types.KeyboardButton("How to use the bot")
+            item7 = telebot.types.KeyboardButton("How to use a bot")
             markup.add(item1,item2,item3,item4,item5,item6,item7)
             bot.reply_to(message, 'Hello, ' + message.from_user.first_name)
 
@@ -199,7 +202,10 @@ def setgroup(message):
 @bot.message_handler(commands=['today'])
 def today(message):
     try:
-        args = extract_arg(message.text)
+        if message.text == "Розклад на сьогодні" or message.text == "Расписание на сегодня" or message.text == "Schedule for today":
+            args = ""
+        else:
+            args = extract_arg(message.text)
         print(args)
         dt = datetime.now()
         dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)  # Returns a copy
@@ -233,7 +239,10 @@ def today(message):
 @bot.message_handler(commands=['tomorrow'])
 def tomorrow(message):
     try:
-        args = extract_arg(message.text)
+        if message.text == "Розклад на завтра" or message.text == "Расписание на завтра" or message.text == "Schedule for tomorrow":
+            args = ""
+        else:
+            args = extract_arg(message.text)
         st = Student.query.filter_by(tid=message.from_user.id).first()
         dt = datetime.now() + timedelta(days=1)
         dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)  # Returns a copy
@@ -267,7 +276,10 @@ def tomorrow(message):
 @bot.message_handler(commands=['next_three_days'])
 def next_three_days(message):
     try:
-        args = extract_arg(message.text)
+        if message.text == "Розклад на три дні" or message.text == "Расписание на три дня" or message.text == "Schedule for three days":
+            args = ""
+        else:
+            args = extract_arg(message.text)
         st = Student.query.filter_by(tid=message.from_user.id).first()
         td = datetime.now()
         td = td.replace(hour=12, minute=0, second=0, microsecond=0)
@@ -349,7 +361,6 @@ def week(message):
             lessons5 = Lessons.query.filter_by(group=''.join(args), date=friday).order_by(Lessons.order)
             lessons6 = Lessons.query.filter_by(group=''.join(args), date=sunday).order_by(Lessons.order)
         else:
-            st = Student.query.filter_by(tid=message.from_user.id).first()
             lessons1 = Lessons.query.filter_by(group=st.group.name, date=monday).order_by(Lessons.order)
             lessons2 = Lessons.query.filter_by(group=st.group.name, date=tuesday).order_by(Lessons.order)
             lessons3 = Lessons.query.filter_by(group=st.group.name, date=wednesday).order_by(Lessons.order)
@@ -473,7 +484,7 @@ def echo_message(message):
         calls(message)
     elif message.text == "Змінити групу" or message.text == "Сменить группу" or message.text == "Change group":
         setgroup(message)
-    elif message.text == "Як користуватися ботом" or message.text == "Как пользоваться ботом" or message.text == "How to use the bot":
+    elif message.text == "Як користуватися ботом" or message.text == "Как пользоваться ботом" or message.text == "How to use a bot":
         help(message)
 
 
