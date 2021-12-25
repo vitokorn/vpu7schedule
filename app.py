@@ -202,8 +202,25 @@ def setgroup(message):
 @bot.message_handler(commands=['today'])
 def today(message):
     try:
-        if message.text == "Розклад на сьогодні" or message.text == "Расписание на сегодня" or message.text == "Schedule for today":
-            args = ""
+        if message.text.startswith("Розклад на сьогодні") or message.text.startswith("Расписание на сегодня") or message.text.startswith("Schedule for today"):
+            if message.from_user.language_code == "uk":
+                try:
+                    args = message.text.split('Розклад на сьогодні ')[1]
+                except:
+                    args = ""
+                print(args)
+            elif message.from_user.language_code == "ru":
+                try:
+                    args = message.text.split('Расписание на сегодня ')[1]
+                except:
+                    args = ""
+                print(args)
+            else:
+                try:
+                    args = message.text.split('Schedule for today ')[1]
+                except:
+                    args = ""
+                print(args)
         else:
             args = extract_arg(message.text)
         print(args)
@@ -239,8 +256,25 @@ def today(message):
 @bot.message_handler(commands=['tomorrow'])
 def tomorrow(message):
     try:
-        if message.text == "Розклад на завтра" or message.text == "Расписание на завтра" or message.text == "Schedule for tomorrow":
-            args = ""
+        if message.text.startswith("Розклад на завтра") or message.text.startswith("Расписание на завтра") or message.text.startswith("Schedule for tomorrow"):
+            if message.from_user.language_code == "uk":
+                try:
+                    args = message.text.split('Розклад на завтра ')[1]
+                except:
+                    args = ""
+                print(args)
+            elif message.from_user.language_code == "ru":
+                try:
+                    args = message.text.split('Расписание на завтра ')[1]
+                except:
+                    args = ""
+                print(args)
+            else:
+                try:
+                    args = message.text.split('Schedule for tomorrow ')[1]
+                except:
+                    args = ""
+                print(args)
         else:
             args = extract_arg(message.text)
         st = Student.query.filter_by(tid=message.from_user.id).first()
@@ -349,7 +383,25 @@ def next_three_days(message):
 @bot.message_handler(commands=['week'])
 def week(message):
     try:
-        if message.text == "Розклад на тиждень" or message.text == "Расписание на неделю" or message.text == "Week schedule":
+        if message.text.startswith("Розклад на тиждень") or message.text.startswith("Расписание на неделю") or message.text.startswith("Week schedule"):
+            if message.from_user.language_code == "uk":
+                try:
+                    args = message.text.split('Розклад на тиждень ')[1]
+                except:
+                    args = ""
+                print(args)
+            elif message.from_user.language_code == "ru":
+                try:
+                    args = message.text.split('Расписание на неделю ')[1]
+                except:
+                    args = ""
+                print(args)
+            else:
+                try:
+                    args = message.text.split('Week schedule ')[1]
+                except:
+                    args = ""
+                print(args)
             args = ""
         else:
             args = extract_arg(message.text)
@@ -490,20 +542,28 @@ def help(message):
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def echo_message(message):
-    if message.text == "Розклад на сьогодні" or message.text == "Расписание на сегодня" or message.text == "Schedule for today":
+    if message.text.startswith("Розклад на сьогодні") or message.text.startswith("Расписание на сегодня") or message.text.startswith("Schedule for today"):
         today(message)
-    elif message.text == "Розклад на завтра" or message.text == "Расписание на завтра" or message.text == "Schedule for tomorrow":
+    elif message.text.startswith("Розклад на завтра") or message.text.startswith("Расписание на завтра") or message.text.startswith("Schedule for tomorrow"):
         tomorrow(message)
     elif message.text.startswith("Розклад на три дні") or message.text.startswith("Расписание на три дня") or message.text.startswith("Schedule for three days"):
         next_three_days(message)
-    elif message.text == "Розклад на тиждень" or message.text == "Расписание на неделю" or message.text == "Week schedule":
+    elif message.text.startswith("Розклад на тиждень") or message.text.startswith("Расписание на неделю") or message.text.startswith("Week schedule"):
         week(message)
-    elif message.text == "Розклад дзвінків" or message.text == "Расписание звонков" or message.text == "Call Schedule":
+    elif message.text.startswith("Розклад дзвінків") or message.text.startswith("Расписание звонков") or message.text.startswith("Call Schedule"):
         calls(message)
-    elif message.text == "Змінити групу" or message.text == "Сменить группу" or message.text == "Change group":
+    elif message.text.startswith("Змінити групу") or message.text.startswith("Сменить группу") or message.text.startswith("Change group"):
         setgroup(message)
-    elif message.text == "Як користуватися ботом" or message.text == "Как пользоваться ботом" or message.text == "How to use a bot":
+    elif message.text.startswith("Як користуватися ботом") or message.text.startswith("Как пользоваться ботом") or message.text.startswith("How to use a bot"):
         help(message)
+    else:
+        if message.from_user.language_code == "uk":
+            msg = f'Невідома команда'
+        elif message.from_user.language_code == "ru":
+            msg = f'Неизвестная комманда'
+        else:
+            msg = f'Unknown command'
+        bot.send_message(message.chat.id, msg)
 
 
 def process_group_step(message):
