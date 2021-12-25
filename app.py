@@ -282,18 +282,22 @@ def next_three_days(message):
                     args = message.text.split('Розклад на три дні ')[1]
                 except:
                     args = ""
+                print(args)
             elif message.from_user.language_code == "ru":
                 try:
                     args = message.text.split('Расписание на три дня ')[1]
                 except:
                     args = ""
+                print(args)
             else:
                 try:
                     args = message.text.split('Schedule for three days ')[1]
                 except:
                     args = ""
+                print(args)
         else:
             args = extract_arg(message.text)
+
         st = Student.query.filter_by(tid=message.from_user.id).first()
         td = datetime.now()
         td = td.replace(hour=12, minute=0, second=0, microsecond=0)
