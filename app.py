@@ -157,7 +157,7 @@ def start(message):
             item1 = telebot.types.KeyboardButton("Розклад на сьогодні")
             item2 = telebot.types.KeyboardButton("Розклад на завтра")
             item3 = telebot.types.KeyboardButton("Розклад на три дні")
-            item4 = telebot.types.KeyboardButton("Розклад на тиждень ")
+            item4 = telebot.types.KeyboardButton("Розклад на тиждень")
             item5 = telebot.types.KeyboardButton("Розклад дзвінків")
             item6 = telebot.types.KeyboardButton("Змінити групу")
             item7 = telebot.types.KeyboardButton("Як користуватися ботом")
@@ -319,7 +319,10 @@ def next_three_days(message):
 @bot.message_handler(commands=['week'])
 def week(message):
     try:
-        args = extract_arg(message.text)
+        if message.text == "Розклад на тиждень" or message.text == "Расписание на неделю" or message.text == "Week schedule":
+            args = ""
+        else:
+            args = extract_arg(message.text)
         st = Student.query.filter_by(tid=message.from_user.id).first()
         dt = datetime.now()
         dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)
