@@ -628,9 +628,13 @@ def sync():
     if dt.isoweekday() == 7:
         db.session.query(Lessons).filter(Lessons.date <= dt).delete()
         db.session.commit()
-    mnd = dt - timedelta(days=dt.weekday())
-    monday = (dt - timedelta(days=dt.weekday())).strftime("%Y-%m-%d")
-    sunday = (mnd + timedelta(days=5)).strftime("%Y-%m-%d")
+        mnd = dt + timedelta(days=1)
+        monday = (dt + timedelta(days=1)).strftime("%Y-%m-%d")
+        sunday = (mnd + timedelta(days=5)).strftime("%Y-%m-%d")
+    else:
+        mnd = dt - timedelta(days=dt.weekday())
+        monday = (dt - timedelta(days=dt.weekday())).strftime("%Y-%m-%d")
+        sunday = (mnd + timedelta(days=5)).strftime("%Y-%m-%d")
 
     groups = Group.query.filter_by()
 
