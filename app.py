@@ -560,7 +560,7 @@ def echo_message(message):
         if message.from_user.language_code == "uk":
             msg = f'Невідома команда'
         elif message.from_user.language_code == "ru":
-            msg = f'Неизвестная комманда'
+            msg = f'Неизвестная команда'
         else:
             msg = f'Unknown command'
         bot.send_message(message.chat.id, msg)
