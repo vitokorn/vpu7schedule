@@ -120,9 +120,9 @@ def aggregatio(lessons,less,dt):
             start = ninth_start
             end = ninth_end
         if le.teacher:
-            text = f'{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+            text = f'{le.order} Урок\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
         else:
-            text = f'{le.order} Пара\n{start} {end}\n{le.subject}\n{le.room}'
+            text = f'{le.order} Урок\n{start} {end}\n{le.subject}\n{le.room}'
         less.append(text)
     return less
 
@@ -517,7 +517,7 @@ def calls(message):
             elif order == 9:
                 start = ninth_start
                 end = ninth_end
-            text = f'{order} Пара {start} {end}'
+            text = f'{order} Урок {start} {end}'
             less.append(text)
         if message.from_user.language_code == "uk":
             bot.reply_to(message, '\n'.join(less))
