@@ -617,6 +617,7 @@ def webhook():
     return "!", 200
 
 
+@bot.message_handler(commands=['sync'])
 @app.route("/sync")
 def sync():
     req = requests.get(url='http://schedule.in.ua:3200/groups',
