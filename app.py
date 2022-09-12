@@ -785,7 +785,7 @@ def test_job():
 scheduler = BackgroundScheduler()
 # job = scheduler.add_job(test_job, 'cron', day_of_week ='mon-sun', hour=16, minute=00)
 cron = '0,15,30,45 0-23 * * 1-6'
-job = scheduler.add_job(test_job, 'cron', CronTrigger.from_crontab(cron))
+job = scheduler.add_job(test_job, CronTrigger.from_crontab(cron))
 scheduler.print_jobs()
 scheduler.start()
 
