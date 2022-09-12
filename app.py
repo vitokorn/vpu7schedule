@@ -163,8 +163,9 @@ def start(message):
             item4 = telebot.types.KeyboardButton("Розклад на тиждень")
             item5 = telebot.types.KeyboardButton("Розклад дзвінків")
             item6 = telebot.types.KeyboardButton("Змінити групу")
-            item7 = telebot.types.KeyboardButton("Як користуватися ботом")
-            markup.add(item1, item2, item3, item4, item5,item6,item7)
+            item7 = telebot.types.KeyboardButton("Моя група")
+            item8 = telebot.types.KeyboardButton("Як користуватися ботом")
+            markup.add(item1,item2,item3,item4,item5,item6,item7,item8)
             bot.send_message(chat_id=message.chat.id, text='Привiт, ' + message.from_user.first_name,reply_markup=markup)
         elif message.from_user.language_code == "ru":
             item1 = telebot.types.KeyboardButton("Расписание на сегодня")
@@ -173,8 +174,9 @@ def start(message):
             item4 = telebot.types.KeyboardButton("Расписание на неделю")
             item5 = telebot.types.KeyboardButton("Расписание звонков")
             item6 = telebot.types.KeyboardButton("Сменить группу")
-            item7 = telebot.types.KeyboardButton("Как пользоваться ботом")
-            markup.add(item1,item2,item3,item4,item5,item6,item7)
+            item7 = telebot.types.KeyboardButton("Моя группа")
+            item8 = telebot.types.KeyboardButton("Как пользоваться ботом")
+            markup.add(item1,item2,item3,item4,item5,item6,item7,item8)
             bot.send_message(chat_id=message.chat.id, text='Привет, ' + message.from_user.first_name,reply_markup=markup)
         else:
             item1 = telebot.types.KeyboardButton("Schedule for today")
@@ -183,8 +185,9 @@ def start(message):
             item4 = telebot.types.KeyboardButton("Week schedule")
             item5 = telebot.types.KeyboardButton("Call Schedule")
             item6 = telebot.types.KeyboardButton("Change group")
-            item7 = telebot.types.KeyboardButton("How to use a bot")
-            markup.add(item1,item2,item3,item4,item5,item6,item7)
+            item7 = telebot.types.KeyboardButton("My group")
+            item8 = telebot.types.KeyboardButton("How to use a bot")
+            markup.add(item1,item2,item3,item4,item5,item6,item7,item8)
             bot.reply_to(message, 'Hello, ' + message.from_user.first_name)
 
 
