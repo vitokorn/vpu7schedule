@@ -199,6 +199,17 @@ def setgroup(message):
     bot.register_next_step_handler(message, process_group_step)
 
 
+@bot.message_handler(commands=['group'])
+def group(message):
+    st = Student.query.filter_by(tid=message.from_user.id).first()
+    if message.from_user.language_code == "uk":
+        bot.reply_to(message, f'Твоя група {st.group.name}')
+    elif message.from_user.language_code == "ru":
+        bot.reply_to(message, f'Твоя группа {st.group.name}')
+    else:
+        bot.reply_to(message, f'Your group {st.group.name}')
+
+
 @bot.message_handler(commands=['today'])
 def today(message):
     try:
@@ -292,11 +303,11 @@ def tomorrow(message):
         else:
             less = aggregatio(lessons,less,dt)
         if message.from_user.language_code == "uk":
-            bot.reply_to(message, '\n'.join(less))
+            bot.reply_to(message, '\n\n'.join(less))
         elif message.from_user.language_code == "ru":
-            bot.reply_to(message, '\n'.join(less))
+            bot.reply_to(message, '\n\n'.join(less))
         else:
-            bot.reply_to(message, '\n'.join(less))
+            bot.reply_to(message, '\n\n'.join(less))
     except:
         print(traceback.format_exc())
         if message.from_user.language_code == "uk":
@@ -554,6 +565,8 @@ def echo_message(message):
         calls(message)
     elif message.text.startswith("Змінити групу") or message.text.startswith("Сменить группу") or message.text.startswith("Change group"):
         setgroup(message)
+    elif message.text.startswith("Моя група") or message.text.startswith("Моя група") or message.text.startswith("My group"):
+        group(message)
     elif message.text.startswith("Як користуватися ботом") or message.text.startswith("Как пользоваться ботом") or message.text.startswith("How to use a bot"):
         help(message)
     else:
