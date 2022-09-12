@@ -124,9 +124,9 @@ def aggregatio(lessons,less,dt):
             start = ninth_start
             end = ninth_end
         if le.teacher:
-            text = f'{le.order} Урок\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+            text = f'{le.order} ⏰ Урок\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
         else:
-            text = f'{le.order} Урок\n{start} {end}\n{le.subject}\n{le.room}'
+            text = f'{le.order} ⏰ Урок\n{start} {end}\n{le.subject}\n{le.room}'
         less.append(text)
     return less
 
@@ -578,6 +578,8 @@ def echo_message(message):
         help(message)
     elif message.text.startswith("Вибрати групу") or message.text.startswith("Выбрать группу") or message.text.startswith("Set group"):
         setgroup(message)
+    elif message.text.endswith(":00"):
+        process_notification_step(message)
     else:
         if message.from_user.language_code == "uk":
             msg = f'Невідома команда'
@@ -660,6 +662,7 @@ def process_notification_step(message):
         st = Student.query.filter_by(tid=message.from_user.id).first()
         print(st)
         st.notification_time = message.text
+        db.session.commit()
         if message.from_user.language_code == "uk":
             bot.reply_to(message, 'Час обраний')
         elif message.from_user.language_code == "ru":
