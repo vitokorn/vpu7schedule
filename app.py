@@ -568,7 +568,7 @@ def echo_message(message):
         calls(message)
     elif message.text.startswith("Змінити групу") or message.text.startswith("Сменить группу") or message.text.startswith("Change group"):
         setgroup(message)
-    elif message.text.startswith("Моя група") or message.text.startswith("Моя група") or message.text.startswith("My group"):
+    elif message.text.startswith("Моя група") or message.text.startswith("Моя группа") or message.text.startswith("My group"):
         group(message)
     elif message.text.startswith("Як користуватися ботом") or message.text.startswith("Как пользоваться ботом") or message.text.startswith("How to use a bot"):
         help(message)
