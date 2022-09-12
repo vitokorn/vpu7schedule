@@ -79,7 +79,7 @@ class Student(db.Model):
     )
     group = db.relationship("Group", backref="Student")
     cid = db.Column(db.Integer)
-    notification_time = db.Column(db.DateTime, default=datetime.utcnow)
+    notification_time = db.Column(db.Time, default=datetime.utcnow)
 
 
 class User:
