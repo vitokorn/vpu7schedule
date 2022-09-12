@@ -124,9 +124,9 @@ def aggregatio(lessons,less,dt):
             start = ninth_start
             end = ninth_end
         if le.teacher:
-            text = f'{le.order} ⏰ Урок\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+            text = f'⏰{le.order} Урок\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
         else:
-            text = f'{le.order} ⏰ Урок\n{start} {end}\n{le.subject}\n{le.room}'
+            text = f'⏰{le.order} Урок\n{start} {end}\n{le.subject}\n{le.room}'
         less.append(text)
     return less
 
@@ -535,7 +535,7 @@ def calls(message):
             elif order == 9:
                 start = ninth_start
                 end = ninth_end
-            text = f'{order} Урок {start} {end}'
+            text = f'⏰{order} Урок {start} {end}'
             less.append(text)
         if message.from_user.language_code == "uk":
             bot.reply_to(message, '\n'.join(less))
@@ -580,6 +580,8 @@ def echo_message(message):
         setgroup(message)
     elif message.text.endswith(":00"):
         process_notification_step(message)
+    elif message.text.startswith('◀️Назад'):
+        main_menu(message)
     else:
         if message.from_user.language_code == "uk":
             msg = f'Невідома команда'
@@ -621,6 +623,7 @@ def process_group_step(message):
         else:
             bot.reply_to(message, 'Group selected ')
         markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
+        itemb = telebot.types.KeyboardButton("◀️Назад")
         item0 = telebot.types.KeyboardButton("6:00")
         item1 = telebot.types.KeyboardButton("7:00")
         item2 = telebot.types.KeyboardButton("8:00")
@@ -639,7 +642,7 @@ def process_group_step(message):
         item15 = telebot.types.KeyboardButton("21:00")
         item16 = telebot.types.KeyboardButton("22:00")
         item17 = telebot.types.KeyboardButton("23:00")
-        markup.add(item0,item1,item2,item3,item4,item5,item6,item7,item8,item9,item10,item11,item12,item13,item14,item15,item16,item17)
+        markup.add(itemb,item0,item1,item2,item3,item4,item5,item6,item7,item8,item9,item10,item11,item12,item13,item14,item15,item16,item17)
         if message.from_user.language_code == "uk":
             bot.send_message(chat_id=message.chat.id, text='Обери час коли ти хочешь отримувати розклад, ' + message.from_user.first_name,
                                  reply_markup=markup)
@@ -743,6 +746,47 @@ def sync():
                                             order=d['order'])
     result = {'sync': 'ok'}
     return result, 200
+
+
+def main_menu(message):
+    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
+    if message.from_user.language_code == "uk":
+        item1 = telebot.types.KeyboardButton("Розклад на сьогодні")
+        item2 = telebot.types.KeyboardButton("Розклад на завтра")
+        item3 = telebot.types.KeyboardButton("Розклад на три дні")
+        item4 = telebot.types.KeyboardButton("Розклад на тиждень")
+        item5 = telebot.types.KeyboardButton("Розклад дзвінків")
+        item6 = telebot.types.KeyboardButton("Змінити групу")
+        item7 = telebot.types.KeyboardButton("Моя група")
+        item8 = telebot.types.KeyboardButton("Як користуватися ботом")
+        main_text = 'Головне меню'
+        markup.add(item1, item2, item3, item4, item5, item6, item7, item8)
+        bot.send_message(chat_id=message.chat.id, text='Привiт, ' + message.from_user.first_name, reply_markup=markup)
+    elif message.from_user.language_code == "ru":
+        item1 = telebot.types.KeyboardButton("Расписание на сегодня")
+        item2 = telebot.types.KeyboardButton("Расписание на завтра")
+        item3 = telebot.types.KeyboardButton("Расписание на три дня")
+        item4 = telebot.types.KeyboardButton("Расписание на неделю")
+        item5 = telebot.types.KeyboardButton("Расписание звонков")
+        item6 = telebot.types.KeyboardButton("Сменить группу")
+        item7 = telebot.types.KeyboardButton("Моя группа")
+        item8 = telebot.types.KeyboardButton("Как пользоваться ботом")
+        main_text = 'Главное меню'
+        markup.add(item1, item2, item3, item4, item5, item6, item7, item8)
+        bot.send_message(chat_id=message.chat.id, text='Привет, ' + message.from_user.first_name, reply_markup=markup)
+    else:
+        item1 = telebot.types.KeyboardButton("Schedule for today")
+        item2 = telebot.types.KeyboardButton("Schedule for tomorrow")
+        item3 = telebot.types.KeyboardButton("Schedule for three days")
+        item4 = telebot.types.KeyboardButton("Week schedule")
+        item5 = telebot.types.KeyboardButton("Call Schedule")
+        item6 = telebot.types.KeyboardButton("Change group")
+        item7 = telebot.types.KeyboardButton("My group")
+        item8 = telebot.types.KeyboardButton("How to use a bot")
+        main_text = 'Main menu'
+        markup.add(item1, item2, item3, item4, item5, item6, item7, item8)
+    bot.send_message(chat_id=message.chat.id, text=f'{main_text}', reply_markup=markup)
+    return
 
 
 def get_or_create(session, model, defaults=None, **kwargs):
