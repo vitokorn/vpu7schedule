@@ -169,7 +169,8 @@ def start(message):
             item6 = telebot.types.KeyboardButton("Змінити групу")
             item7 = telebot.types.KeyboardButton("Моя група")
             item8 = telebot.types.KeyboardButton("Як користуватися ботом")
-            markup.add(item1,item2,item3,item4,item5,item6,item7,item8)
+            item9 = telebot.types.KeyboardButton("Змiнити час отримання розкладу")
+            markup.add(item1,item2,item3,item4,item5,item6,item7,item8,item9)
             bot.send_message(chat_id=message.chat.id, text='Привiт, ' + message.from_user.first_name,reply_markup=markup)
         elif message.from_user.language_code == "ru":
             item1 = telebot.types.KeyboardButton("Расписание на сегодня")
@@ -180,7 +181,8 @@ def start(message):
             item6 = telebot.types.KeyboardButton("Сменить группу")
             item7 = telebot.types.KeyboardButton("Моя группа")
             item8 = telebot.types.KeyboardButton("Как пользоваться ботом")
-            markup.add(item1,item2,item3,item4,item5,item6,item7,item8)
+            item9 = telebot.types.KeyboardButton("Изменить время получения расписания")
+            markup.add(item1,item2,item3,item4,item5,item6,item7,item8,item9)
             bot.send_message(chat_id=message.chat.id, text='Привет, ' + message.from_user.first_name,reply_markup=markup)
         else:
             item1 = telebot.types.KeyboardButton("Schedule for today")
@@ -191,7 +193,8 @@ def start(message):
             item6 = telebot.types.KeyboardButton("Change group")
             item7 = telebot.types.KeyboardButton("My group")
             item8 = telebot.types.KeyboardButton("How to use a bot")
-            markup.add(item1,item2,item3,item4,item5,item6,item7,item8)
+            item9 = telebot.types.KeyboardButton("Change schedule notification")
+            markup.add(item1,item2,item3,item4,item5,item6,item7,item8,item9)
             bot.reply_to(message, 'Hello, ' + message.from_user.first_name)
 
 
