@@ -258,7 +258,7 @@ def today(message):
             args = extract_arg(message.text)
         print(args)
         dt = datetime.now(ua_time)
-        dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)  # Returns a copy
+        dt = dt.replace(hour=12, minute=0, second=0, microsecond=0,tzinfo=None)  # Returns a copy
         less = []
         if len(args) > 0:
             lessons = Lessons.query.filter_by(group=''.join(args), date=dt).order_by(Lessons.order)
@@ -312,7 +312,7 @@ def tomorrow(message):
             args = extract_arg(message.text)
         st = Student.query.filter_by(tid=message.from_user.id).first()
         dt = datetime.now(ua_time) + timedelta(days=1)
-        dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)  # Returns a copy
+        dt = dt.replace(hour=12, minute=0, second=0, microsecond=0,tzinfo=None)  # Returns a copy
         less = []
         if len(args) > 0:
             lessons = Lessons.query.filter_by(group=''.join(args), date=dt).order_by(Lessons.order)
@@ -366,12 +366,12 @@ def next_three_days(message):
             args = extract_arg(message.text)
 
         st = Student.query.filter_by(tid=message.from_user.id).first()
-        td = datetime.now()
-        td = td.replace(hour=12, minute=0, second=0, microsecond=0)
+        td = datetime.now(ua_time)
+        td = td.replace(hour=12, minute=0, second=0, microsecond=0,tzinfo=None)
         dt = datetime.now(ua_time) + timedelta(days=1)
-        dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)
-        tdat = datetime.now() + timedelta(days=2)
-        tdat = tdat.replace(hour=12, minute=0, second=0, microsecond=0)
+        dt = dt.replace(hour=12, minute=0, second=0, microsecond=0,tzinfo=None)
+        tdat = datetime.now(ua_time) + timedelta(days=2)
+        tdat = tdat.replace(hour=12, minute=0, second=0, microsecond=0,tzinfo=None)
 
         less1 = []
         less2 = []
