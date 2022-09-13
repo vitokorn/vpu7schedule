@@ -695,7 +695,7 @@ def process_notification_step(message):
             return
         elif message.text == '⏹ Сбросить' or message.text == "⏹ Скинути" or message.text == "⏹ Reset":
             st = Student.query.filter_by(tid=message.from_user.id).first()
-            st.notification_time = ''
+            st.notification_time = None
             db.session.commit()
             main_menu(message)
             return
