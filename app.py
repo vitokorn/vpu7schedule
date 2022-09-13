@@ -1,6 +1,7 @@
 import os
 import traceback
 
+import flask
 import orjson
 import requests
 from flask import Flask, request
@@ -682,11 +683,13 @@ def process_notification_step(message):
 
 @app.route('/' + str(TOKEN), methods=['POST'])
 def getMessage():
-    print(request.get_data().decode('utf-8'))
-    json_string = request.get_data().decode('utf-8')
-    update = telebot.types.Update.de_json(json_string)
-    bot.process_new_updates([update])
-    return "!", 200
+    if flask.request.headers.get('content-type') == 'application/json':
+        json_string = request.get_data().decode('utf-8')
+        update = telebot.types.Update.de_json(json_string)
+        bot.process_new_updates([update])
+        return "!", 200
+    else:
+        flask.abort(403)
 
 
 @app.route("/")
