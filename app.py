@@ -588,6 +588,8 @@ def echo_message(message):
         process_notification_step(message)
     elif message.text.startswith('◀️Назад'):
         main_menu(message)
+    elif message.text.startswith("Змiнити час отримання розкладу") or message.text.startswith("Изменить время получения расписания") or message.text.startswith("Change schedule notification"):
+        notifi_change(message)
     else:
         if message.from_user.language_code == "uk":
             msg = f'Невідома команда'
@@ -682,6 +684,44 @@ def process_notification_step(message):
     except Exception as e:
         print(traceback.format_exc())
         bot.reply_to(message, 'oooops')
+
+
+def notifi_change(message):
+    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
+    itemb = telebot.types.KeyboardButton("◀️Назад")
+    item0 = telebot.types.KeyboardButton("6:00")
+    item1 = telebot.types.KeyboardButton("7:00")
+    item2 = telebot.types.KeyboardButton("8:00")
+    item3 = telebot.types.KeyboardButton("9:00")
+    item4 = telebot.types.KeyboardButton("10:00")
+    item5 = telebot.types.KeyboardButton("11:00")
+    item6 = telebot.types.KeyboardButton("12:00")
+    item7 = telebot.types.KeyboardButton("13:00")
+    item8 = telebot.types.KeyboardButton("14:00")
+    item9 = telebot.types.KeyboardButton("15:00")
+    item10 = telebot.types.KeyboardButton("16:00")
+    item11 = telebot.types.KeyboardButton("17:00")
+    item12 = telebot.types.KeyboardButton("18:00")
+    item13 = telebot.types.KeyboardButton("19:00")
+    item14 = telebot.types.KeyboardButton("20:00")
+    item15 = telebot.types.KeyboardButton("21:00")
+    item16 = telebot.types.KeyboardButton("22:00")
+    item17 = telebot.types.KeyboardButton("23:00")
+    markup.add(itemb, item0, item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11, item12,
+               item13, item14, item15, item16, item17)
+    if message.from_user.language_code == "uk":
+        bot.send_message(chat_id=message.chat.id,
+                         text='Обери час коли ти хочешь отримувати розклад, ' + message.from_user.first_name,
+                         reply_markup=markup)
+    elif message.from_user.language_code == "ru":
+        bot.send_message(chat_id=message.chat.id,
+                         text='Выбери время когда ты хочешь получать расписание, ' + message.from_user.first_name,
+                         reply_markup=markup)
+    else:
+        bot.send_message(chat_id=message.chat.id,
+                         text='Choose time for notification ' + message.from_user.first_name,
+                         reply_markup=markup)
+    bot.register_next_step_handler(message, process_notification_step)
 
 
 @app.route('/' + str(TOKEN), methods=['POST'])
