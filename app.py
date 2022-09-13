@@ -103,7 +103,7 @@ def aggregatio(lessons,less,dt):
     ignore_order = 0
     for le in lessons:
         if ignore_order == le.order:
-            less[-1] += f'2 группа\n{le.room}\n{le.teacher}'
+            less[-1] += f'\n2 группа:\n{le.room}\n{le.teacher}'
         else:
             if lessons.filter_by(order=le.order).count() > 1:
                 ignore_order = le.order
