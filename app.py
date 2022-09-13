@@ -606,7 +606,7 @@ def process_group_step(message):
             group = Group.query.filter_by(name=message.text).first()
             get_or_create(db.session, Student, tid=message.from_user.id,
                           defaults={'first_name': message.from_user.first_name, 'username': message.from_user.username,
-                                    'language_code': message.from_user.language_code, 'group': group})
+                                    'language_code': message.from_user.language_code, 'group': group, 'cid':message.chat.id})
         else:
             group = Group.query.filter_by(name=message.text).first()
             print(group.id)
@@ -671,6 +671,7 @@ def process_notification_step(message):
         st = Student.query.filter_by(tid=message.from_user.id).first()
         print(st)
         st.notification_time = message.text
+        st.cid = message.chat.id
         db.session.commit()
         if message.from_user.language_code == "uk":
             bot.reply_to(message, 'Час обраний')
