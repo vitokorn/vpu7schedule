@@ -27,6 +27,7 @@ migrate = Migrate(app, db)
 TOKEN = os.environ.get('TOKEN')
 bot = telebot.TeleBot(TOKEN)
 host = os.environ.get('host')
+WEBHOOK_SSL_CERT = '/etc/ssl/certs/nginx-selfsigned.crt'
 
 first_start = "8:30"
 first_end = "9:15"
@@ -696,7 +697,10 @@ def getMessage():
 @app.route("/")
 def webhook():
     bot.remove_webhook()
-    bot.set_webhook(url=f'{host}' + TOKEN)
+    if host.__contains__('vpu7'):
+        bot.set_webhook(url=f'{host}' + TOKEN)
+    else:
+        bot.set_webhook(url=f'{host}' + TOKEN,certificate=open(WEBHOOK_SSL_CERT, 'r'))
     return "!", 200
 
 
