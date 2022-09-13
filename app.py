@@ -100,6 +100,7 @@ user_dict = {}
 def aggregatio(lessons,less,dt):
     date = f'{dt.strftime("%d.%m.%Y")}\n'
     less.append(date)
+    print('aggregator')
     for le in lessons:
         start, end = None, None
         if le.order == 1:
