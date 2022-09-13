@@ -130,8 +130,10 @@ def aggregatio(lessons,less,dt):
             start = ninth_start
             end = ninth_end
         if less.__contains__(f'⏰{le.order} Урок\n{start} {end}\n{le.subject}'):
+            print('contains')
             text = f'------\n{le.room}\n{le.teacher}'
         else:
+            print('no')
             if le.teacher:
                 text = f'⏰{le.order} Урок\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
             else:
