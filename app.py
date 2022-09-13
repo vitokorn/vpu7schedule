@@ -27,7 +27,7 @@ migrate = Migrate(app, db)
 TOKEN = os.environ.get('TOKEN')
 bot = telebot.TeleBot(TOKEN)
 host = os.environ.get('host')
-WEBHOOK_SSL_CERT = '/etc/ssl/certs/nginx-selfsigned.crt'
+WEBHOOK_SSL_CERT = './mycert.pem'
 
 first_start = "8:30"
 first_end = "9:15"
