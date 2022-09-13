@@ -824,8 +824,8 @@ def get_or_create(session, model, defaults=None, **kwargs):
 
 
 def test_job():
-    st = Student.query.filter_by(notification_time=datetime.datetime.now().time().replace(second=0, microsecond=0))
-    if datetime.datetime.now().time().hour > 16:
+    st = Student.query.filter_by(notification_time=datetime.now().time().replace(second=0, microsecond=0))
+    if datetime.now().time().hour > 16:
         dt = datetime.now() + timedelta(days=1)
     else:
         dt = datetime.now()
@@ -839,7 +839,7 @@ def test_job():
             less.append(text)
         else:
             less = aggregatio(lessons, less, dt)
-        if datetime.datetime.now().time().hour > 16:
+        if datetime.now().time().hour > 16:
             bot.send_message(chat_id=s.cid, text='Расписание на завтра \n\n'.join(less))
         else:
             bot.send_message(chat_id=s.cid, text='Расписание на сегодня \n\n'.join(less))
@@ -855,11 +855,11 @@ scheduler.start()
 
 def roundTime(dt=None, roundTo=60):
    """Round a datetime object to any time lapse in seconds
-   dt : datetime.datetime object, default now.
+   dt : datetime object, default now.
    roundTo : Closest number of seconds to round to, default 1 minute.
    Author: Thierry Husson 2012 - Use it as you want but don't blame me.
    """
-   if dt == None : dt = datetime.datetime.now()
+   if dt == None : dt = datetime.now()
    seconds = (dt.replace(tzinfo=None) - dt.min).seconds
    rounding = (seconds+roundTo/2) // roundTo * roundTo
    return dt + datetime.timedelta(0,rounding-seconds,-dt.microsecond)
