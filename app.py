@@ -104,7 +104,7 @@ def aggregatio(lessons,less,dt):
     ignore_order = 0
     for le in lessons:
         if ignore_order == le.order:
-            text = f'-------\n{le.room}\n{le.teacher}'
+            text = f'-------{le.room}\n{le.teacher}'
             less.append(text)
         else:
             if lessons.filter_by(order=le.order).count() > 1:
