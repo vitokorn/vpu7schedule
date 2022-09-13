@@ -129,10 +129,13 @@ def aggregatio(lessons,less,dt):
         elif le.order == 9:
             start = ninth_start
             end = ninth_end
-        if le.teacher:
-            text = f'⏰{le.order} Урок\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+        if less.__contains__(f'⏰{le.order} Урок\n{start} {end}\n{le.subject}'):
+            text = f'------\n{le.room}\n{le.teacher}'
         else:
-            text = f'⏰{le.order} Урок\n{start} {end}\n{le.subject}\n{le.room}'
+            if le.teacher:
+                text = f'⏰{le.order} Урок\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+            else:
+                text = f'⏰{le.order} Урок\n{start} {end}\n{le.subject}\n{le.room}'
         less.append(text)
     return less
 
@@ -589,10 +592,12 @@ def echo_message(message):
         setgroup(message)
     elif message.text.endswith(":00"):
         process_notification_step(message)
-    elif message.text.startswith('◀️Назад'):
+    elif message.text.startswith('◀️Назад') or message.text.startswith('◀️Назад') or message.text.startswith('◀ Back'):
         main_menu(message)
     elif message.text.startswith("Змiнити час отримання розкладу") or message.text.startswith("Изменить время получения расписания") or message.text.startswith("Change schedule notification"):
         notifi_change(message)
+    elif message.text.startswith("⏹ Скинути") or message.text.startswith("⏹ Сбросить") or message.text.startswith("⏹ Reset"):
+        reset(message)
     else:
         if message.from_user.language_code == "uk":
             msg = f'Невідома команда'
@@ -634,7 +639,16 @@ def process_group_step(message):
         else:
             bot.reply_to(message, 'Group selected ')
         markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
-        itemb = telebot.types.KeyboardButton("◀️Назад")
+        if message.from_user.language_code == "uk" or message.from_user.language_code == "ru":
+            itemb = telebot.types.KeyboardButton("◀️Назад")
+        else:
+            itemb = telebot.types.KeyboardButton("◀ Back")
+        if message.from_user.language_code == "uk":
+            itemr = telebot.types.KeyboardButton("⏹ Скинути")
+        elif message.from_user.language_code == "ru":
+            itemr = telebot.types.KeyboardButton("⏹ Сбросить")
+        else:
+            itemr = telebot.types.KeyboardButton("⏹ Reset")
         item0 = telebot.types.KeyboardButton("6:00")
         item1 = telebot.types.KeyboardButton("7:00")
         item2 = telebot.types.KeyboardButton("8:00")
@@ -653,7 +667,7 @@ def process_group_step(message):
         item15 = telebot.types.KeyboardButton("21:00")
         item16 = telebot.types.KeyboardButton("22:00")
         item17 = telebot.types.KeyboardButton("23:00")
-        markup.add(itemb,item0,item1,item2,item3,item4,item5,item6,item7,item8,item9,item10,item11,item12,item13,item14,item15,item16,item17)
+        markup.add(itemb,itemr,item0,item1,item2,item3,item4,item5,item6,item7,item8,item9,item10,item11,item12,item13,item14,item15,item16,item17)
         if message.from_user.language_code == "uk":
             bot.send_message(chat_id=message.chat.id, text='Обери час коли ти хочешь отримувати розклад, ' + message.from_user.first_name,
                                  reply_markup=markup)
@@ -694,7 +708,16 @@ def process_notification_step(message):
 
 def notifi_change(message):
     markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
-    itemb = telebot.types.KeyboardButton("◀️Назад")
+    if message.from_user.language_code == "uk" or message.from_user.language_code == "ru":
+        itemb = telebot.types.KeyboardButton("◀️Назад")
+    else:
+        itemb = telebot.types.KeyboardButton("◀ Back")
+    if message.from_user.language_code == "uk":
+        itemr = telebot.types.KeyboardButton("⏹ Скинути")
+    elif message.from_user.language_code == "ru":
+        itemr = telebot.types.KeyboardButton("⏹ Сбросить")
+    else:
+        itemr = telebot.types.KeyboardButton("⏹ Reset")
     item0 = telebot.types.KeyboardButton("6:00")
     item1 = telebot.types.KeyboardButton("7:00")
     item2 = telebot.types.KeyboardButton("8:00")
@@ -713,7 +736,7 @@ def notifi_change(message):
     item15 = telebot.types.KeyboardButton("21:00")
     item16 = telebot.types.KeyboardButton("22:00")
     item17 = telebot.types.KeyboardButton("23:00")
-    markup.add(itemb, item0, item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11, item12,
+    markup.add(itemb,itemr, item0, item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11, item12,
                item13, item14, item15, item16, item17)
     if message.from_user.language_code == "uk":
         bot.send_message(chat_id=message.chat.id,
@@ -728,6 +751,19 @@ def notifi_change(message):
                          text='Choose time for notification ' + message.from_user.first_name,
                          reply_markup=markup)
     bot.register_next_step_handler(message, process_notification_step)
+
+
+def reset(message):
+    st = Student.query.filter_by(tid=message.from_user.id).first()
+    st.notification_time = ''
+    db.session.commit()
+    if message.from_user.language_code == "uk":
+        text = 'Час успішно скинуто'
+    elif message.from_user.language_code == "ru":
+        text = 'Время успешно сброшено'
+    else:
+        text = 'Success'
+    bot.send_message(st.cid, f'{text}')
 
 
 @app.route('/' + str(TOKEN), methods=['POST'])
