@@ -690,7 +690,13 @@ def process_group_step(message):
 
 def process_notification_step(message):
     try:
-        if message.text == '◀️Назад':
+        if message.text == '◀️Назад' or message.text =='◀ Back':
+            main_menu(message)
+            return
+        elif message.text == '⏹ Сбросить' or message.text == "⏹ Скинути" or message.text == "⏹ Reset":
+            st = Student.query.filter_by(tid=message.from_user.id).first()
+            st.notification_time = ''
+            db.session.commit()
             main_menu(message)
             return
         st = Student.query.filter_by(tid=message.from_user.id).first()
