@@ -10,6 +10,7 @@ from flask_migrate import Migrate
 from datetime import datetime, timedelta
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
+from pytz import timezone
 
 from sqlalchemy.sql import ClauseElement
 import telebot
@@ -28,6 +29,8 @@ TOKEN = os.environ.get('TOKEN')
 bot = telebot.TeleBot(TOKEN)
 host = os.environ.get('host')
 WEBHOOK_SSL_CERT = './webhook_cert.pem'
+
+ua_time = timezone('Europe/Kiev')
 
 first_start = "8:30"
 first_end = "9:15"
@@ -670,6 +673,9 @@ def process_group_step(message):
 
 def process_notification_step(message):
     try:
+        if message.text == '◀️Назад':
+            main_menu(message)
+            return
         st = Student.query.filter_by(tid=message.from_user.id).first()
         print(st)
         st.notification_time = message.text
@@ -865,7 +871,7 @@ def get_or_create(session, model, defaults=None, **kwargs):
 
 
 def test_job():
-    st = Student.query.filter_by(notification_time=datetime.now().time().replace(second=0, microsecond=0))
+    st = Student.query.filter_by(notification_time=datetime.now(ua_time).time().replace(second=0, microsecond=0))
     if datetime.now().time().hour > 16:
         dt = datetime.now() + timedelta(days=1)
     else:
