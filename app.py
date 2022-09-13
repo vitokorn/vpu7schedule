@@ -682,6 +682,7 @@ def process_notification_step(message):
 
 @app.route('/' + str(TOKEN), methods=['POST'])
 def getMessage():
+    print(request.get_data().decode('utf-8'))
     json_string = request.get_data().decode('utf-8')
     update = telebot.types.Update.de_json(json_string)
     bot.process_new_updates([update])
