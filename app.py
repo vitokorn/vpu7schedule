@@ -100,11 +100,10 @@ user_dict = {}
 def aggregatio(lessons,less,dt):
     date = f'{dt.strftime("%d.%m.%Y")}\n'
     less.append(date)
-    print('aggregator')
     ignore_order = 0
     for le in lessons:
         if ignore_order == le.order:
-            text = f'-------{le.room}\n{le.teacher}'
+            text = f'{le.room}\n{le.teacher}'
             less.append(text)
         else:
             if lessons.filter_by(order=le.order).count() > 1:
