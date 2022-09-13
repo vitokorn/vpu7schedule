@@ -26,6 +26,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 TOKEN = os.environ.get('TOKEN')
 bot = telebot.TeleBot(TOKEN)
+host = os.environ.get('host')
 
 first_start = "8:30"
 first_end = "9:15"
@@ -695,7 +696,7 @@ def getMessage():
 @app.route("/")
 def webhook():
     bot.remove_webhook()
-    bot.set_webhook(url='https://vpu7shedule.herokuapp.com/' + TOKEN)
+    bot.set_webhook(url=f'{host}' + TOKEN)
     return "!", 200
 
 
