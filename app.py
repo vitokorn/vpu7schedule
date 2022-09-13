@@ -101,45 +101,47 @@ def aggregatio(lessons,less,dt):
     date = f'{dt.strftime("%d.%m.%Y")}\n'
     less.append(date)
     print('aggregator')
+    ignore_order = 0
     for le in lessons:
-        start, end = None, None
-        if le.order == 1:
-            start = first_start
-            end = first_end
-        elif le.order == 2:
-            start = second_start
-            end = second_end
-        elif le.order == 3:
-            start = third_start
-            end = third_end
-        elif le.order == 4:
-            start = fourth_start
-            end = fourth_end
-        elif le.order == 5:
-            start = fifth_start
-            end = fifth_end
-        elif le.order == 6:
-            start = sixth_start
-            end = sixth_end
-        elif le.order == 7:
-            start = seventh_start
-            end = seventh_end
-        elif le.order == 8:
-            start = eighth_start
-            end = eighth_end
-        elif le.order == 9:
-            start = ninth_start
-            end = ninth_end
-        # if less.strip().__contains__(f'⏰{le.order} Урок{start} {end}{le.subject}'):
-        #     print('contains')
-        #     text = f'------\n{le.room}\n{le.teacher}'
-        # else:
-        if le.teacher:
-            text = f'⏰{le.order} Урок\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+        if ignore_order == le.order:
+            text = f'-------\n{le.room}\n{le.teacher}'
+            less.append(text)
         else:
-            text = f'⏰{le.order} Урок\n{start} {end}\n{le.subject}\n{le.room}'
-        print(text)
-        less.append(text)
+            if lessons.filter(order=le.order).count() > 1:
+                ignore_order = le.order
+            start, end = None, None
+            if le.order == 1:
+                start = first_start
+                end = first_end
+            elif le.order == 2:
+                start = second_start
+                end = second_end
+            elif le.order == 3:
+                start = third_start
+                end = third_end
+            elif le.order == 4:
+                start = fourth_start
+                end = fourth_end
+            elif le.order == 5:
+                start = fifth_start
+                end = fifth_end
+            elif le.order == 6:
+                start = sixth_start
+                end = sixth_end
+            elif le.order == 7:
+                start = seventh_start
+                end = seventh_end
+            elif le.order == 8:
+                start = eighth_start
+                end = eighth_end
+            elif le.order == 9:
+                start = ninth_start
+                end = ninth_end
+            if le.teacher:
+                text = f'⏰{le.order} Урок\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+            else:
+                text = f'⏰{le.order} Урок\n{start} {end}\n{le.subject}\n{le.room}'
+            less.append(text)
     return less
 
 
