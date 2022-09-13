@@ -257,7 +257,7 @@ def today(message):
         else:
             args = extract_arg(message.text)
         print(args)
-        dt = datetime.now()
+        dt = datetime.now(ua_time)
         dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)  # Returns a copy
         less = []
         if len(args) > 0:
@@ -311,7 +311,7 @@ def tomorrow(message):
         else:
             args = extract_arg(message.text)
         st = Student.query.filter_by(tid=message.from_user.id).first()
-        dt = datetime.now() + timedelta(days=1)
+        dt = datetime.now(ua_time) + timedelta(days=1)
         dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)  # Returns a copy
         less = []
         if len(args) > 0:
@@ -368,7 +368,7 @@ def next_three_days(message):
         st = Student.query.filter_by(tid=message.from_user.id).first()
         td = datetime.now()
         td = td.replace(hour=12, minute=0, second=0, microsecond=0)
-        dt = datetime.now() + timedelta(days=1)
+        dt = datetime.now(ua_time) + timedelta(days=1)
         dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)
         tdat = datetime.now() + timedelta(days=2)
         tdat = tdat.replace(hour=12, minute=0, second=0, microsecond=0)
@@ -439,7 +439,7 @@ def week(message):
         else:
             args = extract_arg(message.text)
         st = Student.query.filter_by(tid=message.from_user.id).first()
-        dt = datetime.now()
+        dt = datetime.now(ua_time)
         dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)
 
         mnd = dt - timedelta(days=dt.weekday())
@@ -912,9 +912,9 @@ def get_or_create(session, model, defaults=None, **kwargs):
 def test_job():
     st = Student.query.filter_by(notification_time=datetime.now(ua_time).time().replace(second=0, microsecond=0))
     if datetime.now().time().hour > 16:
-        dt = datetime.now() + timedelta(days=1)
+        dt = datetime.now(ua_time) + timedelta(days=1)
     else:
-        dt = datetime.now()
+        dt = datetime.now(ua_time)
     dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)  # Returns a copy
     for s in st:
         less = []
@@ -925,7 +925,7 @@ def test_job():
             less.append(text)
         else:
             less = aggregatio(lessons, less, dt)
-        if datetime.now().time().hour > 16:
+        if datetime.now(ua_time).time().hour > 16:
             bot.send_message(chat_id=s.cid, text='Расписание на завтра \n\n'.join(less))
         else:
             bot.send_message(chat_id=s.cid, text='Расписание на сегодня \n\n'.join(less))
