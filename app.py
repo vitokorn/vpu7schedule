@@ -695,7 +695,7 @@ def process_notification_step(message):
             return
         elif message.text == '⏹ Сбросить' or message.text == "⏹ Скинути" or message.text == "⏹ Reset":
             st = Student.query.filter_by(tid=message.from_user.id).first()
-            st.notification_time = None
+            st.notification_time = datetime.now().time().replace(hour=0,minute=0,second=0,microsecond=0)
             db.session.commit()
             main_menu(message)
             return
@@ -764,7 +764,7 @@ def notifi_change(message):
 
 def reset(message):
     st = Student.query.filter_by(tid=message.from_user.id).first()
-    st.notification_time = ''
+    st.notification_time = datetime.now().time().replace(hour=0,minute=0,second=0,microsecond=0)
     db.session.commit()
     if message.from_user.language_code == "uk":
         text = 'Час успішно скинуто'
@@ -939,7 +939,8 @@ def test_job():
 
 scheduler = BackgroundScheduler()
 # job = scheduler.add_job(test_job, 'cron', day_of_week ='mon-sun', hour=16, minute=00)
-cron = '0,15,30,45 0-23 * * 1-6'
+# cron = '0,15,30,45 0-23 * * 1-6'
+cron = '0,15,30,45 6-23 * * 1-6'
 job = scheduler.add_job(test_job, CronTrigger.from_crontab(cron))
 scheduler.print_jobs()
 scheduler.start()
