@@ -915,7 +915,7 @@ def get_or_create(session, model, defaults=None, **kwargs):
 
 
 def test_job():
-    st = Student.query.filter_by(notification_time=datetime.now(ua_time).time().replace(second=0, microsecond=0))
+    st = Student.query.filter_by(notification_time=datetime.now(ua_time).time().replace(second=0, microsecond=0)).all()
     if datetime.now(ua_time).time().hour > 16:
         dt = datetime.now(ua_time) + timedelta(days=1)
     else:
