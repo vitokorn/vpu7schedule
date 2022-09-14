@@ -916,11 +916,13 @@ def get_or_create(session, model, defaults=None, **kwargs):
 
 def test_job():
     st = Student.query.filter_by(notification_time=datetime.now(ua_time).time().replace(second=0, microsecond=0)).all()
+    print(st)
     if datetime.now(ua_time).time().hour > 16:
         dt = datetime.now(ua_time) + timedelta(days=1)
     else:
         dt = datetime.now(ua_time)
     dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)  # Returns a copy
+    print(dt)
     for s in st:
         less = []
         lessons = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(Lessons.order)
