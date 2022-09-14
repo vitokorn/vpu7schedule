@@ -923,7 +923,6 @@ def test_job():
     dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)  # Returns a copy
     for s in st:
         less = []
-        st = Student.query.filter_by(tid=s.tid).first()
         lessons = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(Lessons.order)
         if lessons.first() is None:
             text = f'{dt.strftime("%d.%m.%Y")}\nПар нет'
@@ -939,8 +938,8 @@ def test_job():
 scheduler = BackgroundScheduler()
 # job = scheduler.add_job(test_job, 'cron', day_of_week ='mon-sun', hour=16, minute=00)
 # cron = '0,15,30,45 0-23 * * 1-6'
-cron = '0,15,30,45 6-23 * * 1-6'
-job = scheduler.add_job(test_job, CronTrigger.from_crontab(cron))
+# cron = '0,15,30,45 6-23 * * 1-6'
+job = scheduler.add_job(test_job, CronTrigger(day_of_week='mon-sun', hour='6-23', minute='0,15,30,45', timezone='Europe/Kiev'))
 job2 = scheduler.add_job(sync, CronTrigger(day_of_week='sun', hour='8', minute='30', timezone='Europe/Kiev'))
 scheduler.print_jobs()
 scheduler.start()
