@@ -796,7 +796,6 @@ def webhook():
     return "!", 200
 
 
-@bot.message_handler(commands=['sync'])
 @app.route("/sync")
 def sync():
     req = requests.get(url='http://schedule.in.ua:3200/groups',
@@ -917,7 +916,7 @@ def get_or_create(session, model, defaults=None, **kwargs):
 
 def test_job():
     st = Student.query.filter_by(notification_time=datetime.now(ua_time).time().replace(second=0, microsecond=0))
-    if datetime.now().time().hour > 16:
+    if datetime.now(ua_time).time().hour > 16:
         dt = datetime.now(ua_time) + timedelta(days=1)
     else:
         dt = datetime.now(ua_time)
@@ -942,6 +941,7 @@ scheduler = BackgroundScheduler()
 # cron = '0,15,30,45 0-23 * * 1-6'
 cron = '0,15,30,45 6-23 * * 1-6'
 job = scheduler.add_job(test_job, CronTrigger.from_crontab(cron))
+job2 = scheduler.add_job(sync, CronTrigger(day_of_week='sun', hour='8', minute='30', timezone='Europe/Kiev'))
 scheduler.print_jobs()
 scheduler.start()
 
