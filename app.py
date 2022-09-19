@@ -932,9 +932,9 @@ def test_job():
         else:
             less = aggregatio(lessons, less, dt)
         if datetime.now(ua_time).time().hour > 16:
-            bot.send_message(chat_id=s.cid, text='Расписание на завтра \n\n'.join(less))
+            bot.send_message(chat_id=s.cid, text='\n\n'.join(less))
         else:
-            bot.send_message(chat_id=s.cid, text='Расписание на сегодня \n\n'.join(less))
+            bot.send_message(chat_id=s.cid, text='\n\n'.join(less))
 
 
 scheduler = BackgroundScheduler()
