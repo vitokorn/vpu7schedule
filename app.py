@@ -310,7 +310,6 @@ def tomorrow(message):
                 print(args)
         else:
             args = extract_arg(message.text)
-        st = Student.query.filter_by(tid=message.from_user.id).first()
         dt = datetime.now(ua_time) + timedelta(days=1)
         dt = dt.replace(hour=12, minute=0, second=0, microsecond=0,tzinfo=None)  # Returns a copy
         less = []
@@ -365,7 +364,6 @@ def next_three_days(message):
         else:
             args = extract_arg(message.text)
 
-        st = Student.query.filter_by(tid=message.from_user.id).first()
         td = datetime.now(ua_time)
         td = td.replace(hour=12, minute=0, second=0, microsecond=0,tzinfo=None)
         dt = datetime.now(ua_time) + timedelta(days=1)
@@ -470,6 +468,8 @@ def week(message):
             lessons4 = Lessons.query.filter_by(group=st.group.name, date=thursday).order_by(Lessons.order)
             lessons5 = Lessons.query.filter_by(group=st.group.name, date=friday).order_by(Lessons.order)
             lessons6 = Lessons.query.filter_by(group=st.group.name, date=sunday).order_by(Lessons.order)
+        print(471)
+        print(lessons1)
         if lessons1.first() is None:
             text = f'{monday.strftime("%d.%m.%Y")}\nПар нет'
             less1.append(text)
@@ -690,20 +690,20 @@ def process_group_step(message):
 
 def process_notification_step(message):
     try:
+        st = Student.query.filter_by(tid=message.from_user.id).first()
         if message.text == '◀️Назад' or message.text =='◀ Back':
             main_menu(message)
             return
-        elif message.text == '⏹ Сбросить' or message.text == "⏹ Скинути" or message.text == "⏹ Reset":
-            st = Student.query.filter_by(tid=message.from_user.id).first()
+        elif message.text == '⏹ Сбросить' or message.text == "⏹ Скинути" or message.text == "⏹ Reset" or message.text == "0":
             st.notification_time = datetime.now().time().replace(hour=0,minute=0,second=0,microsecond=0)
             db.session.commit()
             main_menu(message)
             return
-        st = Student.query.filter_by(tid=message.from_user.id).first()
-        print(st)
-        st.notification_time = message.text
-        st.cid = message.chat.id
-        db.session.commit()
+        else:
+            print(st)
+            st.notification_time = message.text
+            st.cid = message.chat.id
+            db.session.commit()
         if message.from_user.language_code == "uk":
             bot.reply_to(message, 'Час обраний')
         elif message.from_user.language_code == "ru":
@@ -931,10 +931,11 @@ def test_job():
             less.append(text)
         else:
             less = aggregatio(lessons, less, dt)
-        if datetime.now(ua_time).time().hour > 16:
+        try:
             bot.send_message(chat_id=s.cid, text='\n\n'.join(less))
-        else:
-            bot.send_message(chat_id=s.cid, text='\n\n'.join(less))
+        except telebot.apihelper.ApiTelegramException:
+            s.delete()
+            db.session.commit()
 
 
 scheduler = BackgroundScheduler()
