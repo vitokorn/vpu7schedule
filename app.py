@@ -20,7 +20,7 @@ import urllib3
 
 http = urllib3.PoolManager()
 
-logging.basicConfig(filename='schedule7.txt',level=logging.INFO, format="%(asctime)s - %(message)s")
+logging.basicConfig(filename='schedule7',level=logging.INFO, format="%(asctime)s - %(message)s")
 logger: logging.Logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
@@ -444,7 +444,7 @@ def week(message):
             args = extract_arg(message.text)
         st = Student.query.filter_by(tid=message.from_user.id).first()
         dt = datetime.now(ua_time)
-        dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)
+        dt = dt.replace(hour=12, minute=0, second=0, microsecond=0,tzinfo=None)
 
         mnd = dt - timedelta(days=dt.weekday())
         monday = (dt - timedelta(days=dt.weekday()))
