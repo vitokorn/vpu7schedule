@@ -20,8 +20,8 @@ import urllib3
 
 http = urllib3.PoolManager()
 
-logging.basicConfig(filename='schedule7',level=logging.INFO, format="%(asctime)s - %(message)s")
-logger: logging.Logger = logging.getLogger(__name__)
+# logging.basicConfig(filename='schedule7',level=logging.INFO, format="%(asctime)s - %(message)s")
+# logger: logging.Logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -155,7 +155,7 @@ def extract_arg(arg):
 
 @bot.message_handler(commands=['start'])
 def start(message):
-    logger.debug(message.from_user)
+    print(message.from_user)
     st = Student.query.filter_by(tid=message.from_user.id).first()
     markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
     if st is None:
@@ -247,22 +247,22 @@ def today(message):
                     args = message.text.split('Розклад на сьогодні ')[1]
                 except:
                     args = ""
-                logger.debug(args)
+                print(args)
             elif message.from_user.language_code == "ru":
                 try:
                     args = message.text.split('Расписание на сегодня ')[1]
                 except:
                     args = ""
-                logger.debug(args)
+                print(args)
             else:
                 try:
                     args = message.text.split('Schedule for today ')[1]
                 except:
                     args = ""
-                logger.debug(args)
+                print(args)
         else:
             args = extract_arg(message.text)
-        logger.debug(args)
+        print(args)
         dt = datetime.now(ua_time)
         dt = dt.replace(hour=12, minute=0, second=0, microsecond=0,tzinfo=None)  # Returns a copy
         less = []
@@ -283,7 +283,7 @@ def today(message):
         else:
             bot.reply_to(message, '\n\n'.join(less))
     except:
-        logger.debug(traceback.format_exc())
+        print(traceback.format_exc())
         if message.from_user.language_code == "uk":
             bot.send_message(chat_id=message.chat.id,text='Виникла помилка')
         elif message.from_user.language_code == "ru":
@@ -301,19 +301,19 @@ def tomorrow(message):
                     args = message.text.split('Розклад на завтра ')[1]
                 except:
                     args = ""
-                logger.debug(args)
+                print(args)
             elif message.from_user.language_code == "ru":
                 try:
                     args = message.text.split('Расписание на завтра ')[1]
                 except:
                     args = ""
-                logger.debug(args)
+                print(args)
             else:
                 try:
                     args = message.text.split('Schedule for tomorrow ')[1]
                 except:
                     args = ""
-                logger.debug(args)
+                print(args)
         else:
             args = extract_arg(message.text)
         dt = datetime.now(ua_time) + timedelta(days=1)
@@ -336,7 +336,7 @@ def tomorrow(message):
         else:
             bot.reply_to(message, '\n\n'.join(less))
     except:
-        logger.debug(traceback.format_exc())
+        print(traceback.format_exc())
         if message.from_user.language_code == "uk":
             bot.send_message(chat_id=message.chat.id,text='Виникла помилка')
         elif message.from_user.language_code == "ru":
@@ -354,19 +354,19 @@ def next_three_days(message):
                     args = message.text.split('Розклад на три дні ')[1]
                 except:
                     args = ""
-                logger.debug(args)
+                print(args)
             elif message.from_user.language_code == "ru":
                 try:
                     args = message.text.split('Расписание на три дня ')[1]
                 except:
                     args = ""
-                logger.debug(args)
+                print(args)
             else:
                 try:
                     args = message.text.split('Schedule for three days ')[1]
                 except:
                     args = ""
-                logger.debug(args)
+                print(args)
         else:
             args = extract_arg(message.text)
 
@@ -408,7 +408,7 @@ def next_three_days(message):
         bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less2))
         bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less3))
     except:
-        logger.debug(traceback.format_exc())
+        print(traceback.format_exc())
         if message.from_user.language_code == "uk":
             bot.send_message(chat_id=message.chat.id,text='Виникла помилка')
         elif message.from_user.language_code == "ru":
@@ -426,19 +426,19 @@ def week(message):
                     args = message.text.split('Розклад на тиждень ')[1]
                 except:
                     args = ""
-                logger.debug(f'{args}')
+                print(f'{args}')
             elif message.from_user.language_code == "ru":
                 try:
                     args = message.text.split('Расписание на неделю ')[1]
                 except:
                     args = ""
-                logger.debug(f'{args}')
+                print(f'{args}')
             else:
                 try:
                     args = message.text.split('Week schedule ')[1]
                 except:
                     args = ""
-                logger.debug(f'{args}')
+                print(f'{args}')
             args = ""
         else:
             args = extract_arg(message.text)
@@ -474,7 +474,7 @@ def week(message):
             lessons4 = Lessons.query.filter_by(group=st.group.name, date=thursday).order_by(Lessons.order)
             lessons5 = Lessons.query.filter_by(group=st.group.name, date=friday).order_by(Lessons.order)
             lessons6 = Lessons.query.filter_by(group=st.group.name, date=sunday).order_by(Lessons.order)
-        logger.debug(f'lessons1')
+        print(f'lessons1')
         if lessons1.first() is None:
             text = f'{monday.strftime("%d.%m.%Y")}\nПар нет'
             less1.append(text)
@@ -513,7 +513,7 @@ def week(message):
         bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less5))
         bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less6))
     except:
-        logger.debug(traceback.format_exc())
+        print(traceback.format_exc())
         if message.from_user.language_code == "uk":
             bot.send_message(chat_id=message.chat.id,text='Виникла помилка')
         elif message.from_user.language_code == "ru":
@@ -564,7 +564,7 @@ def calls(message):
         else:
             bot.reply_to(message, '\n'.join(less))
     except:
-        logger.debug(traceback.format_exc())
+        print(traceback.format_exc())
 
 
 @bot.message_handler(commands=['help'])
@@ -619,7 +619,7 @@ def echo_message(message):
 def process_group_step(message):
     try:
         st = Student.query.filter_by(tid=message.from_user.id).first()
-        logger.debug(st)
+        print(st)
         if st is None:
             group = Group.query.filter_by(name=message.text).first()
             get_or_create(db.session, Student, tid=message.from_user.id,
@@ -627,7 +627,7 @@ def process_group_step(message):
                                     'language_code': message.from_user.language_code, 'group': group, 'cid':message.chat.id})
         else:
             group = Group.query.filter_by(name=message.text).first()
-            logger.debug(group.id)
+            print(group.id)
             st.group = group
             st.group_id = group.id
             st.first_name = message.from_user.first_name
@@ -689,7 +689,7 @@ def process_group_step(message):
                                  reply_markup=markup)
         bot.register_next_step_handler(message, process_notification_step)
     except Exception as e:
-        logger.debug(traceback.format_exc())
+        print(traceback.format_exc())
         bot.reply_to(message, 'oooops')
 
 
@@ -705,7 +705,7 @@ def process_notification_step(message):
             main_menu(message)
             return
         else:
-            logger.debug(st)
+            print(st)
             st.notification_time = message.text
             st.cid = message.chat.id
             db.session.commit()
@@ -716,7 +716,7 @@ def process_notification_step(message):
         else:
             bot.reply_to(message, 'Time selected')
     except Exception as e:
-        logger.debug(traceback.format_exc())
+        print(traceback.format_exc())
         bot.reply_to(message, 'oooops')
 
 
@@ -830,17 +830,17 @@ def sync():
             'group': f'{g.uid}',
             'to': f'{sunday}T10:00:00.000Z'
         }
-        logger.debug(f'497 {data}')
+        print(f'497 {data}')
         nd = orjson.dumps(data)
 
         req3 = http.request(method='POST', url='http://schedule.in.ua:3200/lessons/query', body=nd,
                             headers={'X-Institution': 'vische-profesiine-uchilische-7','Content-Type': 'application/json'})
         res3 = orjson.loads(req3.data)
-        logger.debug(g.name)
-        logger.debug(len(res3))
+        print(g.name)
+        print(len(res3))
         for d in res3:
             parseddate = datetime.strptime(d['date'], '%Y-%m-%dT%H:%M:%S.%fZ')
-            # logger.debug(f'506 {parseddate}')
+            # print(f'506 {parseddate}')
             if d['room'] and d['room']['name']:
                 room = d['room']['name']
             else:
@@ -920,14 +920,14 @@ def get_or_create(session, model, defaults=None, **kwargs):
 
 
 def test_job():
-    st = Student.query.filter_by(notification_time=datetime.now(ua_time).time().replace(second=0, microsecond=0)).all()
-    logger.debug(st)
+    st = Student.query.filter_by(notification_time=datetime.now(ua_time).time().replace(second=0, microsecond=0),active=True).all()
+    print(st)
     if datetime.now(ua_time).time().hour > 16:
         dt = datetime.now(ua_time) + timedelta(days=1)
     else:
         dt = datetime.now(ua_time)
     dt = dt.replace(hour=12, minute=0, second=0, microsecond=0)  # Returns a copy
-    logger.debug(dt)
+    print(dt)
     for s in st:
         less = []
         lessons = Lessons.query.filter_by(group=s.group.name, date=dt.replace(tzinfo=None)).order_by(Lessons.order)
@@ -939,7 +939,7 @@ def test_job():
         try:
             bot.send_message(chat_id=s.cid, text='\n\n'.join(less))
         except telebot.apihelper.ApiTelegramException:
-            logger.debug(f'user {s.id} blocked bot')
+            print(f'user {s.id} blocked bot')
             s.active = False
             db.session.commit()
 
@@ -963,7 +963,7 @@ def roundTime(dt=None, roundTo=60):
    if dt == None : dt = datetime.now()
    seconds = (dt.replace(tzinfo=None) - dt.min).seconds
    rounding = (seconds+roundTo/2) // roundTo * roundTo
-   return dt + datetime.timedelta(0,rounding-seconds,-dt.microsecond)
+   return dt + timedelta(0,rounding-seconds,-dt.microsecond)
 
 
 @app.route('/')
