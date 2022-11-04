@@ -944,14 +944,14 @@ def test_job():
             db.session.commit()
 
 
-# scheduler = BackgroundScheduler()
+scheduler = BackgroundScheduler()
 # # job = scheduler.add_job(test_job, 'cron', day_of_week ='mon-sun', hour=16, minute=00)
 # # cron = '0,15,30,45 0-23 * * 1-6'
 # # cron = '0,15,30,45 6-23 * * 1-6'
-# job = scheduler.add_job(test_job, CronTrigger(day_of_week='mon-sun', hour='6-23', minute='0,15,30,45', timezone='Europe/Kiev'))
-# job2 = scheduler.add_job(sync, CronTrigger(day_of_week='sun', hour='8', minute='30', timezone='Europe/Kiev'))
-# scheduler.print_jobs()
-# scheduler.start()
+job = scheduler.add_job(test_job, CronTrigger(day_of_week='mon-sun', hour='6-23', minute='0,15,30,45', timezone='Europe/Kiev'))
+job2 = scheduler.add_job(sync, CronTrigger(day_of_week='sun', hour='8', minute='30', timezone='Europe/Kiev'))
+scheduler.print_jobs()
+scheduler.start()
 
 
 def roundTime(dt=None, roundTo=60):
