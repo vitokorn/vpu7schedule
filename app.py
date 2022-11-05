@@ -708,6 +708,7 @@ def process_notification_step(message):
             print(st)
             st.notification_time = message.text
             st.cid = message.chat.id
+            st.active = True
             db.session.commit()
         if message.from_user.language_code == "uk":
             bot.reply_to(message, 'Час обраний')
