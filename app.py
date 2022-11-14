@@ -178,6 +178,8 @@ def start(message):
         text += message.from_user.first_name
         bot.send_message(chat_id=message.chat.id, text=text, reply_markup=markup)
     else:
+        st.active = True
+        db.session.commit()
         if message.from_user.language_code == "uk":
             item1 = telebot.types.KeyboardButton("Розклад на сьогодні")
             item2 = telebot.types.KeyboardButton("Розклад на завтра")
