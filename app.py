@@ -164,12 +164,18 @@ def start(message):
             item1 = telebot.types.KeyboardButton("Вибрати групу")
             item2 = telebot.types.KeyboardButton("Як користуватися ботом")
             markup.add(item1,item2)
-            text = 'Привiт, '
-        elif message.from_user.language_code == "ru":
+            text = f'Привiт, {message.from_user.first_name} нажаль всі данні було видалено, тому що,' \
+                   ' проект працював на сервері який на даний момент не проплачений і відповідно дані були стерті, ' \
+                   'на жаль, бекапа бд в мене не було, тому доведеться налаштувати все заново. Будь ласка сповісти своїх друзів, про те, що бот знову працює'
+        elif message.from_user.lanПривguage_code == "ru":
             item1 = telebot.types.KeyboardButton("Выбрать группу")
             item2 = telebot.types.KeyboardButton("Как пользоваться ботом")
             markup.add(item1,item2)
-            text = 'Привет, '
+            text = f'Привет, {message.from_user.first_name} к сожалению все данные были удалены, потому что,'\
+                   ' проект работал на сервере который на данный момент не проплачен ' \
+                   'и соответственно данные были стерты. ' \
+                   'К сожалению, бекапа бд у меня не было, поэтому придется настроить все заново. Пожалуйста сообщи своим друзьям, ' \
+                   'что бот снова работает'
         else:
             item1 = telebot.types.KeyboardButton("Set group")
             item2 = telebot.types.KeyboardButton("How to use a bot")

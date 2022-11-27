@@ -1,0 +1,13 @@
+certifi==2022.9.24
+flask==2.2.2
+Flask-Migrate==4.0.0
+Flask-SQLAlchemy==3.0.2
+gunicorn==20.1.0
+Jinja2==1.2
+psycopg2-binary==3.1.4
+SQLAlchemy==1.4.44
+Werkzeug==2.2.2
+requests==2.28.1
+orjson==3.8.2
+pytelegrambotapi==4.7.1
+APScheduler==3.9.1.post1
