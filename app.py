@@ -792,6 +792,9 @@ def reset(message):
 
 @app.route("/")
 def webhook():
+    print(host)
+    print(TOKEN)
+    print(db)
     bot.remove_webhook()
     bot.set_webhook(url=f'{host}' + TOKEN,certificate=open(WEBHOOK_SSL_CERT, 'r'))
     return "!", 200
