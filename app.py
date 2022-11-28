@@ -795,8 +795,11 @@ def webhook():
     print(host)
     print(TOKEN)
     print(db)
-    bot.remove_webhook()
-    bot.set_webhook(url=f'{host}' + TOKEN,certificate=open(WEBHOOK_SSL_CERT, 'r'))
+    try:
+        bot.remove_webhook()
+        bot.set_webhook(url=f'{host}' + TOKEN,certificate=open(WEBHOOK_SSL_CERT, 'r'))
+    except:
+        print(traceback.format_exc())
     return "!", 200
 
 
