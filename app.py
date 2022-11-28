@@ -1,5 +1,6 @@
 import os
 import traceback
+from dotenv import load_dotenv
 
 import flask
 import orjson
@@ -19,7 +20,7 @@ import telebot
 import urllib3
 
 http = urllib3.PoolManager()
-
+load_dotenv()
 # logging.basicConfig(filename='schedule7',level=logging.INFO, format="%(asctime)s - %(message)s")
 # logger: logging.Logger = logging.getLogger(__name__)
 
@@ -789,6 +790,13 @@ def reset(message):
     bot.send_message(st.cid, f'{text}')
 
 
+@app.route("/")
+def webhook():
+    bot.remove_webhook()
+    bot.set_webhook(url=f'{host}' + TOKEN,certificate=open(WEBHOOK_SSL_CERT, 'r'))
+    return "!", 200
+
+
 @app.route('/' + str(TOKEN), methods=['POST'])
 def getMessage():
     if flask.request.headers.get('content-type') == 'application/json':
@@ -800,11 +808,6 @@ def getMessage():
         flask.abort(403)
 
 
-@app.route("/")
-def webhook():
-    bot.remove_webhook()
-    bot.set_webhook(url=f'{host}' + TOKEN,certificate=open(WEBHOOK_SSL_CERT, 'r'))
-    return "!", 200
 
 
 @app.route("/sync")

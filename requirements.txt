@@ -10,4 +10,5 @@ Werkzeug==2.2.2
 requests==2.28.1
 orjson==3.8.2
 pytelegrambotapi==4.7.1
+python-dotenv==0.21.0
 APScheduler==3.9.1.post1
