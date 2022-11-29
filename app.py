@@ -965,8 +965,8 @@ scheduler = BackgroundScheduler()
 # # cron = '0,15,30,45 6-23 * * 1-6'
 job = scheduler.add_job(test_job, CronTrigger(day_of_week='mon-sun', hour='6-23', minute='0,15,30,45', timezone='Europe/Kiev'))
 job2 = scheduler.add_job(sync, CronTrigger(day_of_week='sun', hour='8', minute='30', timezone='Europe/Kiev'))
-#scheduler.print_jobs()
-#scheduler.start()
+scheduler.print_jobs()
+scheduler.start()
 
 
 def roundTime(dt=None, roundTo=60):
