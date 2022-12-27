@@ -947,8 +947,9 @@ def test_job():
         less = []
         lessons = Lessons.query.filter_by(group=s.group.name, date=dt.replace(tzinfo=None)).order_by(Lessons.order)
         if lessons.first() is None:
-            text = f'{dt.strftime("%d.%m.%Y")}\nПар нет'
-            less.append(text)
+            pass
+            # text = f'{dt.strftime("%d.%m.%Y")}\nПар нет'
+            # less.append(text)
         else:
             less = aggregatio(lessons, less, dt)
         try:
