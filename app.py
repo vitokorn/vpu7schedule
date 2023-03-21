@@ -25,18 +25,17 @@ load_dotenv()
 # logger: logging.Logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config[
-    'SQLALCHEMY_DATABASE_URI'] = os.environ.get('db')
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("db")
 app.jinja_env.auto_reload = True
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-TOKEN = os.environ.get('TOKEN')
+TOKEN = os.environ.get("TOKEN")
 bot = telebot.TeleBot(TOKEN)
-host = os.environ.get('host')
-WEBHOOK_SSL_CERT = './webhook_cert.pem'
+host = os.environ.get("host")
+WEBHOOK_SSL_CERT = "./webhook_cert.pem"
 
-ua_time = timezone('Europe/Kiev')
+ua_time = timezone("Europe/Kiev")
 
 first_start = "8:30"
 first_end = "9:15"
@@ -59,7 +58,7 @@ ninth_end = "17:10"
 
 
 class Group(db.Model):
-    __tablename__ = 'group'
+    __tablename__ = "group"
 
     id = db.Column(db.Integer, primary_key=True, index=True)
     uid = db.Column(db.String)
@@ -67,7 +66,7 @@ class Group(db.Model):
 
 
 class Lessons(db.Model):
-    __tablename__ = 'lessons'
+    __tablename__ = "lessons"
 
     id = db.Column(db.Integer, primary_key=True, index=True)
     room = db.Column(db.String)
@@ -85,14 +84,12 @@ class Student(db.Model):
     tid = db.Column(db.Integer)
     language_code = db.Column(db.String)
     group_id = db.Column(
-        db.Integer,
-        db.ForeignKey("group.id", ondelete="CASCADE"),
-        nullable=False
+        db.Integer, db.ForeignKey("group.id", ondelete="CASCADE"), nullable=False
     )
     group = db.relationship("Group", backref="Student")
     cid = db.Column(db.Integer)
     notification_time = db.Column(db.Time, default=datetime.utcnow)
-    active = db.Column(db.Boolean,nullable=False,default=True,server_default="true")
+    active = db.Column(db.Boolean, nullable=False, default=True, server_default="true")
 
 
 class User:
@@ -104,13 +101,13 @@ class User:
 user_dict = {}
 
 
-def aggregatio(lessons,less,dt):
+def aggregatio(lessons, less, dt):
     date = f'{dt.strftime("%d.%m.%Y")}\n'
     less.append(date)
     ignore_order = 0
     for le in lessons:
         if ignore_order == le.order:
-            less[-1] += f'\n2 группа:\n{le.room}\n{le.teacher}'
+            less[-1] += f"\n2 группа:\n{le.room}\n{le.teacher}"
         else:
             if lessons.filter_by(order=le.order).count() > 1:
                 ignore_order = le.order
@@ -143,9 +140,9 @@ def aggregatio(lessons,less,dt):
                 start = ninth_start
                 end = ninth_end
             if le.teacher:
-                text = f'⏰{le.order} Урок\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}'
+                text = f"⏰{le.order} Урок\n{start} {end}\n{le.subject}\n{le.room}\n{le.teacher}"
             else:
-                text = f'⏰{le.order} Урок\n{start} {end}\n{le.subject}\n{le.room}'
+                text = f"⏰{le.order} Урок\n{start} {end}\n{le.subject}\n{le.room}"
             less.append(text)
     return less
 
@@ -154,7 +151,7 @@ def extract_arg(arg):
     return arg.split()[1:]
 
 
-@bot.message_handler(commands=['start'])
+@bot.message_handler(commands=["start"])
 def start(message):
     print(message.from_user)
     st = Student.query.filter_by(tid=message.from_user.id).first()
@@ -164,24 +161,28 @@ def start(message):
         if message.from_user.language_code == "uk":
             item1 = telebot.types.KeyboardButton("Вибрати групу")
             item2 = telebot.types.KeyboardButton("Як користуватися ботом")
-            markup.add(item1,item2)
-            text = f'Привiт, {message.from_user.first_name} нажаль всі данні було видалено, тому що,' \
-                   ' проект працював на сервері який на даний момент не проплачений і відповідно дані були стерті, ' \
-                   'на жаль, бекапа бд в мене не було, тому доведеться налаштувати все заново. Будь ласка сповісти своїх друзів, про те, що бот знову працює'
+            markup.add(item1, item2)
+            text = (
+                f"Привiт, {message.from_user.first_name} нажаль всі данні було видалено, тому що,"
+                " проект працював на сервері який на даний момент не проплачений і відповідно дані були стерті, "
+                "на жаль, бекапа бд в мене не було, тому доведеться налаштувати все заново. Будь ласка сповісти своїх друзів, про те, що бот знову працює"
+            )
         elif message.from_user.lanПривguage_code == "ru":
             item1 = telebot.types.KeyboardButton("Выбрать группу")
             item2 = telebot.types.KeyboardButton("Как пользоваться ботом")
-            markup.add(item1,item2)
-            text = f'Привет, {message.from_user.first_name} к сожалению все данные были удалены, потому что,'\
-                   ' проект работал на сервере который на данный момент не проплачен ' \
-                   'и соответственно данные были стерты. ' \
-                   'К сожалению, бекапа бд у меня не было, поэтому придется настроить все заново. Пожалуйста сообщи своим друзьям, ' \
-                   'что бот снова работает'
+            markup.add(item1, item2)
+            text = (
+                f"Привет, {message.from_user.first_name} к сожалению все данные были удалены, потому что,"
+                " проект работал на сервере который на данный момент не проплачен "
+                "и соответственно данные были стерты. "
+                "К сожалению, бекапа бд у меня не было, поэтому придется настроить все заново. Пожалуйста сообщи своим друзьям, "
+                "что бот снова работает"
+            )
         else:
             item1 = telebot.types.KeyboardButton("Set group")
             item2 = telebot.types.KeyboardButton("How to use a bot")
-            markup.add(item1,item2)
-            text = 'Hello, '
+            markup.add(item1, item2)
+            text = "Hello, "
         text += message.from_user.first_name
         bot.send_message(chat_id=message.chat.id, text=text, reply_markup=markup)
     else:
@@ -197,8 +198,12 @@ def start(message):
             item7 = telebot.types.KeyboardButton("Моя група")
             item8 = telebot.types.KeyboardButton("Як користуватися ботом")
             item9 = telebot.types.KeyboardButton("Змiнити час отримання розкладу")
-            markup.add(item1,item2,item3,item4,item5,item6,item7,item8,item9)
-            bot.send_message(chat_id=message.chat.id, text='Привiт, ' + message.from_user.first_name,reply_markup=markup)
+            markup.add(item1, item2, item3, item4, item5, item6, item7, item8, item9)
+            bot.send_message(
+                chat_id=message.chat.id,
+                text="Привiт, " + message.from_user.first_name,
+                reply_markup=markup,
+            )
         elif message.from_user.language_code == "ru":
             item1 = telebot.types.KeyboardButton("Расписание на сегодня")
             item2 = telebot.types.KeyboardButton("Расписание на завтра")
@@ -209,8 +214,12 @@ def start(message):
             item7 = telebot.types.KeyboardButton("Моя группа")
             item8 = telebot.types.KeyboardButton("Как пользоваться ботом")
             item9 = telebot.types.KeyboardButton("Изменить время получения расписания")
-            markup.add(item1,item2,item3,item4,item5,item6,item7,item8,item9)
-            bot.send_message(chat_id=message.chat.id, text='Привет, ' + message.from_user.first_name,reply_markup=markup)
+            markup.add(item1, item2, item3, item4, item5, item6, item7, item8, item9)
+            bot.send_message(
+                chat_id=message.chat.id,
+                text="Привет, " + message.from_user.first_name,
+                reply_markup=markup,
+            )
         else:
             item1 = telebot.types.KeyboardButton("Schedule for today")
             item2 = telebot.types.KeyboardButton("Schedule for tomorrow")
@@ -221,51 +230,55 @@ def start(message):
             item7 = telebot.types.KeyboardButton("My group")
             item8 = telebot.types.KeyboardButton("How to use a bot")
             item9 = telebot.types.KeyboardButton("Change schedule notification")
-            markup.add(item1,item2,item3,item4,item5,item6,item7,item8,item9)
-            bot.reply_to(message, 'Hello, ' + message.from_user.first_name)
+            markup.add(item1, item2, item3, item4, item5, item6, item7, item8, item9)
+            bot.reply_to(message, "Hello, " + message.from_user.first_name)
 
 
-@bot.message_handler(commands=['set'])
+@bot.message_handler(commands=["set"])
 def setgroup(message):
     if message.from_user.language_code == "uk":
-        bot.reply_to(message, 'Напиши назву своєї групи')
+        bot.reply_to(message, "Напиши назву своєї групи")
     elif message.from_user.language_code == "ru":
-        bot.reply_to(message, 'Напиши название своей группы')
+        bot.reply_to(message, "Напиши название своей группы")
     else:
-        bot.reply_to(message, 'Write your group name')
+        bot.reply_to(message, "Write your group name")
     bot.register_next_step_handler(message, process_group_step)
 
 
-@bot.message_handler(commands=['group'])
+@bot.message_handler(commands=["group"])
 def group(message):
     st = Student.query.filter_by(tid=message.from_user.id).first()
     if message.from_user.language_code == "uk":
-        bot.reply_to(message, f'Твоя група {st.group.name}')
+        bot.reply_to(message, f"Твоя група {st.group.name}")
     elif message.from_user.language_code == "ru":
-        bot.reply_to(message, f'Твоя группа {st.group.name}')
+        bot.reply_to(message, f"Твоя группа {st.group.name}")
     else:
-        bot.reply_to(message, f'Your group {st.group.name}')
+        bot.reply_to(message, f"Your group {st.group.name}")
 
 
-@bot.message_handler(commands=['today'])
+@bot.message_handler(commands=["today"])
 def today(message):
     try:
-        if message.text.startswith("Розклад на сьогодні") or message.text.startswith("Расписание на сегодня") or message.text.startswith("Schedule for today"):
+        if (
+            message.text.startswith("Розклад на сьогодні")
+            or message.text.startswith("Расписание на сегодня")
+            or message.text.startswith("Schedule for today")
+        ):
             if message.from_user.language_code == "uk":
                 try:
-                    args = message.text.split('Розклад на сьогодні ')[1]
+                    args = message.text.split("Розклад на сьогодні ")[1]
                 except:
                     args = ""
                 print(args)
             elif message.from_user.language_code == "ru":
                 try:
-                    args = message.text.split('Расписание на сегодня ')[1]
+                    args = message.text.split("Расписание на сегодня ")[1]
                 except:
                     args = ""
                 print(args)
             else:
                 try:
-                    args = message.text.split('Schedule for today ')[1]
+                    args = message.text.split("Schedule for today ")[1]
                 except:
                     args = ""
                 print(args)
@@ -273,106 +286,124 @@ def today(message):
             args = extract_arg(message.text)
         print(args)
         dt = datetime.now(ua_time)
-        dt = dt.replace(hour=12, minute=0, second=0, microsecond=0,tzinfo=None)  # Returns a copy
+        dt = dt.replace(
+            hour=12, minute=0, second=0, microsecond=0, tzinfo=None
+        )  # Returns a copy
         less = []
         if len(args) > 0:
-            lessons = Lessons.query.filter_by(group=''.join(args), date=dt).order_by(Lessons.order)
+            lessons = Lessons.query.filter_by(group="".join(args), date=dt).order_by(
+                Lessons.order
+            )
         else:
             st = Student.query.filter_by(tid=message.from_user.id).first()
-            lessons = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(Lessons.order)
+            lessons = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(
+                Lessons.order
+            )
         if lessons.first() is None:
             text = f'{dt.strftime("%d.%m.%Y")}\nПар нет'
             less.append(text)
         else:
             less = aggregatio(lessons, less, dt)
         if message.from_user.language_code == "uk":
-            bot.reply_to(message, '\n\n'.join(less))
+            bot.reply_to(message, "\n\n".join(less))
         elif message.from_user.language_code == "ru":
-            bot.reply_to(message, '\n\n'.join(less))
+            bot.reply_to(message, "\n\n".join(less))
         else:
-            bot.reply_to(message, '\n\n'.join(less))
+            bot.reply_to(message, "\n\n".join(less))
     except:
         print(traceback.format_exc())
-        if message.from_user.language_code == "uk":
-            bot.send_message(chat_id=message.chat.id,text='Виникла помилка')
-        elif message.from_user.language_code == "ru":
-            bot.send_message(chat_id=message.chat.id,text='Произошла ошибка')
-        else:
-            bot.send_message(chat_id=message.chat.id,text='An error has occurred')
+        tg_error(message)
 
 
-@bot.message_handler(commands=['tomorrow'])
+@bot.message_handler(commands=["tomorrow"])
 def tomorrow(message):
     try:
-        if message.text.startswith("Розклад на завтра") or message.text.startswith("Расписание на завтра") or message.text.startswith("Schedule for tomorrow"):
+        if (
+            message.text.startswith("Розклад на завтра")
+            or message.text.startswith("Расписание на завтра")
+            or message.text.startswith("Schedule for tomorrow")
+        ):
             if message.from_user.language_code == "uk":
                 try:
-                    args = message.text.split('Розклад на завтра ')[1]
+                    args = message.text.split("Розклад на завтра ")[1]
                 except:
                     args = ""
                 print(args)
             elif message.from_user.language_code == "ru":
                 try:
-                    args = message.text.split('Расписание на завтра ')[1]
+                    args = message.text.split("Расписание на завтра ")[1]
                 except:
                     args = ""
                 print(args)
             else:
                 try:
-                    args = message.text.split('Schedule for tomorrow ')[1]
+                    args = message.text.split("Schedule for tomorrow ")[1]
                 except:
                     args = ""
                 print(args)
         else:
             args = extract_arg(message.text)
         dt = datetime.now(ua_time) + timedelta(days=1)
-        dt = dt.replace(hour=12, minute=0, second=0, microsecond=0,tzinfo=None)  # Returns a copy
+        dt = dt.replace(
+            hour=12, minute=0, second=0, microsecond=0, tzinfo=None
+        )  # Returns a copy
         less = []
         if len(args) > 0:
-            lessons = Lessons.query.filter_by(group=''.join(args), date=dt).order_by(Lessons.order)
+            lessons = Lessons.query.filter_by(group="".join(args), date=dt).order_by(
+                Lessons.order
+            )
         else:
             st = Student.query.filter_by(tid=message.from_user.id).first()
-            lessons = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(Lessons.order)
+            lessons = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(
+                Lessons.order
+            )
         if lessons.first() is None:
             text = f'{dt.strftime("%d.%m.%Y")}\nПар нет'
             less.append(text)
         else:
-            less = aggregatio(lessons,less,dt)
+            less = aggregatio(lessons, less, dt)
         if message.from_user.language_code == "uk":
-            bot.reply_to(message, '\n\n'.join(less))
+            bot.reply_to(message, "\n\n".join(less))
         elif message.from_user.language_code == "ru":
-            bot.reply_to(message, '\n\n'.join(less))
+            bot.reply_to(message, "\n\n".join(less))
         else:
-            bot.reply_to(message, '\n\n'.join(less))
+            bot.reply_to(message, "\n\n".join(less))
     except:
-        print(traceback.format_exc())
-        if message.from_user.language_code == "uk":
-            bot.send_message(chat_id=message.chat.id,text='Виникла помилка')
-        elif message.from_user.language_code == "ru":
-            bot.send_message(chat_id=message.chat.id,text='Произошла ошибка')
-        else:
-            bot.send_message(chat_id=message.chat.id,text='An error has occurred')
+        tg_error(message)
 
 
-@bot.message_handler(commands=['next_three_days'])
+def tg_error(message):
+    if message.from_user.language_code == "uk":
+        bot.send_message(chat_id=message.chat.id, text="Виникла помилка")
+    elif message.from_user.language_code == "ru":
+        bot.send_message(chat_id=message.chat.id, text="Произошла ошибка")
+    else:
+        bot.send_message(chat_id=message.chat.id, text="An error has occurred")
+
+
+@bot.message_handler(commands=["next_three_days"])
 def next_three_days(message):
     try:
-        if message.text.startswith("Розклад на три дні") or message.text.startswith("Расписание на три дня") or message.text.startswith("Schedule for three days"):
+        if (
+            message.text.startswith("Розклад на три дні")
+            or message.text.startswith("Расписание на три дня")
+            or message.text.startswith("Schedule for three days")
+        ):
             if message.from_user.language_code == "uk":
                 try:
-                    args = message.text.split('Розклад на три дні ')[1]
+                    args = message.text.split("Розклад на три дні ")[1]
                 except:
                     args = ""
                 print(args)
             elif message.from_user.language_code == "ru":
                 try:
-                    args = message.text.split('Расписание на три дня ')[1]
+                    args = message.text.split("Расписание на три дня ")[1]
                 except:
                     args = ""
                 print(args)
             else:
                 try:
-                    args = message.text.split('Schedule for three days ')[1]
+                    args = message.text.split("Schedule for three days ")[1]
                 except:
                     args = ""
                 print(args)
@@ -380,24 +411,36 @@ def next_three_days(message):
             args = extract_arg(message.text)
 
         td = datetime.now(ua_time)
-        td = td.replace(hour=12, minute=0, second=0, microsecond=0,tzinfo=None)
+        td = td.replace(hour=12, minute=0, second=0, microsecond=0, tzinfo=None)
         dt = datetime.now(ua_time) + timedelta(days=1)
-        dt = dt.replace(hour=12, minute=0, second=0, microsecond=0,tzinfo=None)
+        dt = dt.replace(hour=12, minute=0, second=0, microsecond=0, tzinfo=None)
         tdat = datetime.now(ua_time) + timedelta(days=2)
-        tdat = tdat.replace(hour=12, minute=0, second=0, microsecond=0,tzinfo=None)
+        tdat = tdat.replace(hour=12, minute=0, second=0, microsecond=0, tzinfo=None)
 
         less1 = []
         less2 = []
         less3 = []
         if len(args) > 0:
-            lessons1 = Lessons.query.filter_by(group=''.join(args), date=td).order_by(Lessons.order)
-            lessons2 = Lessons.query.filter_by(group=''.join(args), date=dt).order_by(Lessons.order)
-            lessons3 = Lessons.query.filter_by(group=''.join(args), date=tdat).order_by(Lessons.order)
+            lessons1 = Lessons.query.filter_by(group="".join(args), date=td).order_by(
+                Lessons.order
+            )
+            lessons2 = Lessons.query.filter_by(group="".join(args), date=dt).order_by(
+                Lessons.order
+            )
+            lessons3 = Lessons.query.filter_by(group="".join(args), date=tdat).order_by(
+                Lessons.order
+            )
         else:
             st = Student.query.filter_by(tid=message.from_user.id).first()
-            lessons1 = Lessons.query.filter_by(group=st.group.name, date=td).order_by(Lessons.order)
-            lessons2 = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(Lessons.order)
-            lessons3 = Lessons.query.filter_by(group=st.group.name, date=tdat).order_by(Lessons.order)
+            lessons1 = Lessons.query.filter_by(group=st.group.name, date=td).order_by(
+                Lessons.order
+            )
+            lessons2 = Lessons.query.filter_by(group=st.group.name, date=dt).order_by(
+                Lessons.order
+            )
+            lessons3 = Lessons.query.filter_by(group=st.group.name, date=tdat).order_by(
+                Lessons.order
+            )
         if lessons1.first() is None:
             text = f'{td.strftime("%d.%m.%Y")}\nПар нет'
             less1.append(text)
@@ -413,55 +456,62 @@ def next_three_days(message):
             less3.append(text)
         else:
             less3 = aggregatio(lessons3, less3, tdat)
-        bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less1))
-        bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less2))
-        bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less3))
+        bot.send_message(chat_id=message.chat.id, text="\n\n".join(less1))
+        bot.send_message(chat_id=message.chat.id, text="\n\n".join(less2))
+        bot.send_message(chat_id=message.chat.id, text="\n\n".join(less3))
     except:
         print(traceback.format_exc())
-        if message.from_user.language_code == "uk":
-            bot.send_message(chat_id=message.chat.id,text='Виникла помилка')
-        elif message.from_user.language_code == "ru":
-            bot.send_message(chat_id=message.chat.id,text='Произошла ошибка')
-        else:
-            bot.send_message(chat_id=message.chat.id,text='An error has occurred')
+        tg_error(message)
 
 
-@bot.message_handler(commands=['week'])
+@bot.message_handler(commands=["week"])
 def week(message):
     try:
-        if message.text.startswith("Розклад на тиждень") or message.text.startswith("Расписание на неделю") or message.text.startswith("Week schedule"):
+        if (
+            message.text.startswith("Розклад на тиждень")
+            or message.text.startswith("Расписание на неделю")
+            or message.text.startswith("Week schedule")
+        ):
             if message.from_user.language_code == "uk":
                 try:
-                    args = message.text.split('Розклад на тиждень ')[1]
+                    args = message.text.split("Розклад на тиждень ")[1]
                 except:
                     args = ""
-                print(f'{args}')
+                print(f"{args}")
             elif message.from_user.language_code == "ru":
                 try:
-                    args = message.text.split('Расписание на неделю ')[1]
+                    args = message.text.split("Расписание на неделю ")[1]
                 except:
                     args = ""
-                print(f'{args}')
+                print(f"{args}")
             else:
                 try:
-                    args = message.text.split('Week schedule ')[1]
+                    args = message.text.split("Week schedule ")[1]
                 except:
                     args = ""
-                print(f'{args}')
+                print(f"{args}")
             args = ""
         else:
             args = extract_arg(message.text)
         st = Student.query.filter_by(tid=message.from_user.id).first()
         dt = datetime.now(ua_time)
-        dt = dt.replace(hour=12, minute=0, second=0, microsecond=0,tzinfo=None)
+        dt = dt.replace(hour=12, minute=0, second=0, microsecond=0, tzinfo=None)
 
         mnd = dt - timedelta(days=dt.weekday())
-        monday = (dt - timedelta(days=dt.weekday()))
-        tuesday = (mnd + timedelta(days=1))
-        wednesday = (mnd + timedelta(days=2))
-        thursday = (mnd + timedelta(days=3))
-        friday = (mnd + timedelta(days=4))
-        sunday = (mnd + timedelta(days=5))
+        monday = dt - timedelta(days=dt.weekday())
+        tuesday = mnd + timedelta(days=1)
+        wednesday = mnd + timedelta(days=2)
+        thursday = mnd + timedelta(days=3)
+        friday = mnd + timedelta(days=4)
+        saturday = mnd + timedelta(days=5)
+        sunday = mnd + timedelta(days=6)
+        if dt == sunday:
+            monday = mnd + timedelta(weeks=1)
+            tuesday = mnd + timedelta(weeks=1) + timedelta(days=1) + timedelta(weeks=1)
+            wednesday = mnd + timedelta(weeks=1) + timedelta(days=2)
+            thursday = mnd + timedelta(weeks=1) + timedelta(days=3)
+            friday = mnd + timedelta(weeks=1) + timedelta(days=4)
+            saturday = mnd + timedelta(weeks=1) +timedelta(days=5)
 
         less1 = []
         less2 = []
@@ -470,20 +520,28 @@ def week(message):
         less5 = []
         less6 = []
         if len(args) > 0:
-            lessons1 = Lessons.query.filter_by(group=''.join(args), date=monday).order_by(Lessons.order)
-            lessons2 = Lessons.query.filter_by(group=''.join(args), date=tuesday).order_by(Lessons.order)
-            lessons3 = Lessons.query.filter_by(group=''.join(args), date=wednesday).order_by(Lessons.order)
-            lessons4 = Lessons.query.filter_by(group=''.join(args), date=thursday).order_by(Lessons.order)
-            lessons5 = Lessons.query.filter_by(group=''.join(args), date=friday).order_by(Lessons.order)
-            lessons6 = Lessons.query.filter_by(group=''.join(args), date=sunday).order_by(Lessons.order)
+            gr = "".join(args)
         else:
-            lessons1 = Lessons.query.filter_by(group=st.group.name, date=monday).order_by(Lessons.order)
-            lessons2 = Lessons.query.filter_by(group=st.group.name, date=tuesday).order_by(Lessons.order)
-            lessons3 = Lessons.query.filter_by(group=st.group.name, date=wednesday).order_by(Lessons.order)
-            lessons4 = Lessons.query.filter_by(group=st.group.name, date=thursday).order_by(Lessons.order)
-            lessons5 = Lessons.query.filter_by(group=st.group.name, date=friday).order_by(Lessons.order)
-            lessons6 = Lessons.query.filter_by(group=st.group.name, date=sunday).order_by(Lessons.order)
-        print(f'lessons1')
+            gr = st.group.name
+        lessons1 = Lessons.query.filter_by(group=gr, date=monday).order_by(
+            Lessons.order
+        )
+        lessons2 = Lessons.query.filter_by(group=gr, date=tuesday).order_by(
+            Lessons.order
+        )
+        lessons3 = Lessons.query.filter_by(group=gr, date=wednesday).order_by(
+            Lessons.order
+        )
+        lessons4 = Lessons.query.filter_by(group=gr, date=thursday).order_by(
+            Lessons.order
+        )
+        lessons5 = Lessons.query.filter_by(group=gr, date=friday).order_by(
+            Lessons.order
+        )
+        lessons6 = Lessons.query.filter_by(group=gr, date=saturday).order_by(
+            Lessons.order
+        )
+        print(f"lessons1")
         if lessons1.first() is None:
             text = f'{monday.strftime("%d.%m.%Y")}\nПар нет'
             less1.append(text)
@@ -510,28 +568,23 @@ def week(message):
         else:
             less5 = aggregatio(lessons5, less5, friday)
         if lessons6.first() is None:
-            text = f'{sunday.strftime("%d.%m.%Y")}\nПар нет'
+            text = f'{saturday.strftime("%d.%m.%Y")}\nПар нет'
             less6.append(text)
         else:
-            less6 = aggregatio(lessons6, less6, sunday)
+            less6 = aggregatio(lessons6, less6, saturday)
             # bot.reply_to(message, '\n'.join(less))
-        bot.send_message(chat_id=message.chat.id,text='\n\n'.join(less1))
-        bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less2))
-        bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less3))
-        bot.send_message(chat_id=message.chat.id,text='\n\n'.join(less4))
-        bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less5))
-        bot.send_message(chat_id=message.chat.id, text='\n\n'.join(less6))
+        bot.send_message(chat_id=message.chat.id, text="\n\n".join(less1))
+        bot.send_message(chat_id=message.chat.id, text="\n\n".join(less2))
+        bot.send_message(chat_id=message.chat.id, text="\n\n".join(less3))
+        bot.send_message(chat_id=message.chat.id, text="\n\n".join(less4))
+        bot.send_message(chat_id=message.chat.id, text="\n\n".join(less5))
+        bot.send_message(chat_id=message.chat.id, text="\n\n".join(less6))
     except:
         print(traceback.format_exc())
-        if message.from_user.language_code == "uk":
-            bot.send_message(chat_id=message.chat.id,text='Виникла помилка')
-        elif message.from_user.language_code == "ru":
-            bot.send_message(chat_id=message.chat.id,text='Произошла ошибка')
-        else:
-            bot.send_message(chat_id=message.chat.id,text='An error has occurred')
+        tg_error(message)
 
 
-@bot.message_handler(commands=['calls'])
+@bot.message_handler(commands=["calls"])
 def calls(message):
     try:
         less = []
@@ -564,64 +617,135 @@ def calls(message):
             elif order == 9:
                 start = ninth_start
                 end = ninth_end
-            text = f'⏰{order} Урок {start} {end}'
+            text = f"⏰{order} Урок {start} {end}"
             less.append(text)
         if message.from_user.language_code == "uk":
-            bot.reply_to(message, '\n'.join(less))
+            bot.reply_to(message, "\n".join(less))
         elif message.from_user.language_code == "ru":
-            bot.reply_to(message, '\n'.join(less))
+            bot.reply_to(message, "\n".join(less))
         else:
-            bot.reply_to(message, '\n'.join(less))
+            bot.reply_to(message, "\n".join(less))
     except:
         print(traceback.format_exc())
 
 
-@bot.message_handler(commands=['help'])
+@bot.message_handler(commands=["help"])
 def help(message):
     if message.from_user.language_code == "uk":
-        msg = f'Користуватися ботом можна у двох режимах, перший за допомогою команд, другий за допомогою клавіатури (не можна переглядати групу без реєстрації). Команди: /today, /tomorrow, /next_three_days, /week, призначені для отримання розкладу на певний день. Мають дві форми: 1. Вихідна (/today) – призначена для отримання розкладу користувачеві, який був раніше зареєстрований. Доповнена (/today О1-20) – призначена для отримання розкладу для довільної групи (не вимагає реєстрації).\nДля реєстрації необхідно ввести команду /set і в наступному повідомленні вказати свою групу.\n'
+        msg = (
+            f"Користуватися ботом можна у двох режимах, перший за допомогою команд, другий за допомогою клавіатури "
+            f"(не можна переглядати групу без реєстрації). Команди: /today, /tomorrow, /next_three_days, /week, "
+            f"призначені для отримання розкладу на певний день. Мають дві форми: 1. Вихідна (/today) – призначена "
+            f"для отримання розкладу користувачеві, який був раніше зареєстрований. Доповнена (/today О1-20) – "
+            f"призначена для отримання розкладу для довільної групи (не вимагає реєстрації).\nДля реєстрації "
+            f"необхідно ввести команду /set і в наступному повідомленні вказати свою групу.\n"
+        )
     elif message.from_user.language_code == "ru":
-        msg = f'Пользоваться ботом можно в двух режимах, первый с помощью команд, второй с помощью клавиатуры(недоступен просмотр группы без регистрации). Команды: /today, /tomorrow, /next_three_days, /week, предназначены для получения расписания на определенное к-во дней. Имеют две формы:\n 1. Исходная (/today) – предназначена для получения расписания пользователю, который был ранее зарегистрирован.\n2. Дополненная (/today О1-20) – предназначена для получения расписания для произвольной группы (не требует регистрацию).\nДля регистрации необходимо ввести команду /set и в следующем сообщении указать свою группу.\n'
+        msg = (
+            f"Пользоваться ботом можно в двух режимах, первый с помощью команд, второй с помощью клавиатуры("
+            f"недоступен просмотр группы без регистрации). Команды: /today, /tomorrow, /next_three_days, /week, "
+            f"предназначены для получения расписания на определенное к-во дней. Имеют две формы:\n 1. Исходная ("
+            f"/today) – предназначена для получения расписания пользователю, который был ранее зарегистрирован.\n2. "
+            f"Дополненная (/today О1-20) – предназначена для получения расписания для произвольной группы (не "
+            f"требует регистрацию).\nДля регистрации необходимо ввести команду /set и в следующем сообщении указать "
+            f"свою группу.\n"
+        )
     else:
-        msg = f'Пользоваться ботом можно в двух режимах, первый с помощью команд, второй с помощью клавиатуры(недоступен просмотр группы без регистрации). Команды: /today, /tomorrow, /next_three_days, /week, предназначены для получения расписания на определенное к-во дней. Имеют две формы:\n 1. Исходная (/today) – предназначена для получения расписания пользователю, который был ранее зарегистрирован.\n2. Дополненная (/today О1-20) – предназначена для получения расписания для произвольной группы (не требует регистрацию).\nДля регистрации необходимо ввести команду /set и в следующем сообщении указать свою группу.\n'
+        msg = (
+            f"Пользоваться ботом можно в двух режимах, первый с помощью команд, второй с помощью клавиатуры("
+            f"недоступен просмотр группы без регистрации). Команды: /today, /tomorrow, /next_three_days, /week, "
+            f"предназначены для получения расписания на определенное к-во дней. Имеют две формы:\n 1. Исходная ("
+            f"/today) – предназначена для получения расписания пользователю, который был ранее зарегистрирован.\n2. "
+            f"Дополненная (/today О1-20) – предназначена для получения расписания для произвольной группы (не "
+            f"требует регистрацию).\nДля регистрации необходимо ввести команду /set и в следующем сообщении указать "
+            f"свою группу.\n"
+        )
     bot.send_message(message.chat.id, msg)
 
 
-@bot.message_handler(func=lambda message: True, content_types=['text'])
+@bot.message_handler(func=lambda message: True, content_types=["text"])
 def echo_message(message):
-    if message.text.startswith("Розклад на сьогодні") or message.text.startswith("Расписание на сегодня") or message.text.startswith("Schedule for today"):
+    if (
+        message.text.startswith("Розклад на сьогодні")
+        or message.text.startswith("Расписание на сегодня")
+        or message.text.startswith("Schedule for today")
+    ):
         today(message)
-    elif message.text.startswith("Розклад на завтра") or message.text.startswith("Расписание на завтра") or message.text.startswith("Schedule for tomorrow"):
+    elif (
+        message.text.startswith("Розклад на завтра")
+        or message.text.startswith("Расписание на завтра")
+        or message.text.startswith("Schedule for tomorrow")
+    ):
         tomorrow(message)
-    elif message.text.startswith("Розклад на три дні") or message.text.startswith("Расписание на три дня") or message.text.startswith("Schedule for three days"):
+    elif (
+        message.text.startswith("Розклад на три дні")
+        or message.text.startswith("Расписание на три дня")
+        or message.text.startswith("Schedule for three days")
+    ):
         next_three_days(message)
-    elif message.text.startswith("Розклад на тиждень") or message.text.startswith("Расписание на неделю") or message.text.startswith("Week schedule"):
+    elif (
+        message.text.startswith("Розклад на тиждень")
+        or message.text.startswith("Расписание на неделю")
+        or message.text.startswith("Week schedule")
+    ):
         week(message)
-    elif message.text.startswith("Розклад дзвінків") or message.text.startswith("Расписание звонков") or message.text.startswith("Call Schedule"):
+    elif (
+        message.text.startswith("Розклад дзвінків")
+        or message.text.startswith("Расписание звонков")
+        or message.text.startswith("Call Schedule")
+    ):
         calls(message)
-    elif message.text.startswith("Змінити групу") or message.text.startswith("Сменить группу") or message.text.startswith("Change group"):
+    elif (
+        message.text.startswith("Змінити групу")
+        or message.text.startswith("Сменить группу")
+        or message.text.startswith("Change group")
+    ):
         setgroup(message)
-    elif message.text.startswith("Моя група") or message.text.startswith("Моя группа") or message.text.startswith("My group"):
+    elif (
+        message.text.startswith("Моя група")
+        or message.text.startswith("Моя группа")
+        or message.text.startswith("My group")
+    ):
         group(message)
-    elif message.text.startswith("Як користуватися ботом") or message.text.startswith("Как пользоваться ботом") or message.text.startswith("How to use a bot"):
+    elif (
+        message.text.startswith("Як користуватися ботом")
+        or message.text.startswith("Как пользоваться ботом")
+        or message.text.startswith("How to use a bot")
+    ):
         help(message)
-    elif message.text.startswith("Вибрати групу") or message.text.startswith("Выбрать группу") or message.text.startswith("Set group"):
+    elif (
+        message.text.startswith("Вибрати групу")
+        or message.text.startswith("Выбрать группу")
+        or message.text.startswith("Set group")
+    ):
         setgroup(message)
     elif message.text.endswith(":00"):
         process_notification_step(message)
-    elif message.text.startswith('◀️Назад') or message.text.startswith('◀️Назад') or message.text.startswith('◀ Back'):
+    elif (
+        message.text.startswith("◀️Назад")
+        or message.text.startswith("◀️Назад")
+        or message.text.startswith("◀ Back")
+    ):
         main_menu(message)
-    elif message.text.startswith("Змiнити час отримання розкладу") or message.text.startswith("Изменить время получения расписания") or message.text.startswith("Change schedule notification"):
+    elif (
+        message.text.startswith("Змiнити час отримання розкладу")
+        or message.text.startswith("Изменить время получения расписания")
+        or message.text.startswith("Change schedule notification")
+    ):
         notifi_change(message)
-    elif message.text.startswith("⏹ Скинути") or message.text.startswith("⏹ Сбросить") or message.text.startswith("⏹ Reset"):
+    elif (
+        message.text.startswith("⏹ Скинути")
+        or message.text.startswith("⏹ Сбросить")
+        or message.text.startswith("⏹ Reset")
+    ):
         reset(message)
     else:
         if message.from_user.language_code == "uk":
-            msg = f'Невідома команда'
+            msg = f"Невідома команда"
         elif message.from_user.language_code == "ru":
-            msg = f'Неизвестная команда'
+            msg = f"Неизвестная команда"
         else:
-            msg = f'Unknown command'
+            msg = f"Unknown command"
         bot.send_message(message.chat.id, msg)
 
 
@@ -631,9 +755,18 @@ def process_group_step(message):
         print(st)
         if st is None:
             group = Group.query.filter_by(name=message.text).first()
-            get_or_create(db.session, Student, tid=message.from_user.id,
-                          defaults={'first_name': message.from_user.first_name, 'username': message.from_user.username,
-                                    'language_code': message.from_user.language_code, 'group': group, 'cid':message.chat.id})
+            get_or_create(
+                db.session,
+                Student,
+                tid=message.from_user.id,
+                defaults={
+                    "first_name": message.from_user.first_name,
+                    "username": message.from_user.username,
+                    "language_code": message.from_user.language_code,
+                    "group": group,
+                    "cid": message.chat.id,
+                },
+            )
         else:
             group = Group.query.filter_by(name=message.text).first()
             print(group.id)
@@ -644,19 +777,22 @@ def process_group_step(message):
             db.session.commit()
         if Group.query.filter_by(name=message.text).first() is None:
             if message.from_user.language_code == "uk":
-                bot.reply_to(message, 'Такої групи не існує ')
+                bot.reply_to(message, "Такої групи не існує ")
             elif message.from_user.language_code == "ru":
-                bot.reply_to(message, 'There is no such group')
+                bot.reply_to(message, "There is no such group")
             else:
-                bot.reply_to(message, 'Group selected ')
+                bot.reply_to(message, "Group selected ")
         if message.from_user.language_code == "uk":
-            bot.reply_to(message, 'Група обрана')
+            bot.reply_to(message, "Група обрана")
         elif message.from_user.language_code == "ru":
-            bot.reply_to(message, 'Группа выбрана')
+            bot.reply_to(message, "Группа выбрана")
         else:
-            bot.reply_to(message, 'Group selected ')
+            bot.reply_to(message, "Group selected ")
         markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
-        if message.from_user.language_code == "uk" or message.from_user.language_code == "ru":
+        if (
+            message.from_user.language_code == "uk"
+            or message.from_user.language_code == "ru"
+        ):
             itemb = telebot.types.KeyboardButton("◀️Назад")
         else:
             itemb = telebot.types.KeyboardButton("◀ Back")
@@ -684,32 +820,69 @@ def process_group_step(message):
         item15 = telebot.types.KeyboardButton("21:00")
         item16 = telebot.types.KeyboardButton("22:00")
         item17 = telebot.types.KeyboardButton("23:00")
-        markup.add(itemb,itemr,item0,item1,item2,item3,item4,item5,item6,item7,item8,item9,item10,item11,item12,item13,item14,item15,item16,item17)
+        markup.add(
+            itemb,
+            itemr,
+            item0,
+            item1,
+            item2,
+            item3,
+            item4,
+            item5,
+            item6,
+            item7,
+            item8,
+            item9,
+            item10,
+            item11,
+            item12,
+            item13,
+            item14,
+            item15,
+            item16,
+            item17,
+        )
         if message.from_user.language_code == "uk":
-            bot.send_message(chat_id=message.chat.id, text='Обери час коли ти хочешь отримувати розклад, ' + message.from_user.first_name,
-                                 reply_markup=markup)
+            bot.send_message(
+                chat_id=message.chat.id,
+                text="Обери час коли ти хочешь отримувати розклад, "
+                + message.from_user.first_name,
+                reply_markup=markup,
+            )
         elif message.from_user.language_code == "ru":
-            bot.send_message(chat_id=message.chat.id,
-                                 text='Выбери время когда ты хочешь получать расписание, ' + message.from_user.first_name,
-                                 reply_markup=markup)
+            bot.send_message(
+                chat_id=message.chat.id,
+                text="Выбери время когда ты хочешь получать расписание, "
+                + message.from_user.first_name,
+                reply_markup=markup,
+            )
         else:
-            bot.send_message(chat_id=message.chat.id,
-                                 text='Choose time for notification ' + message.from_user.first_name,
-                                 reply_markup=markup)
+            bot.send_message(
+                chat_id=message.chat.id,
+                text="Choose time for notification " + message.from_user.first_name,
+                reply_markup=markup,
+            )
         bot.register_next_step_handler(message, process_notification_step)
     except Exception as e:
         print(traceback.format_exc())
-        bot.reply_to(message, 'oooops')
+        bot.reply_to(message, "oooops")
 
 
 def process_notification_step(message):
     try:
         st = Student.query.filter_by(tid=message.from_user.id).first()
-        if message.text == '◀️Назад' or message.text =='◀ Back':
+        if message.text == "◀️Назад" or message.text == "◀ Back":
             main_menu(message)
             return
-        elif message.text == '⏹ Сбросить' or message.text == "⏹ Скинути" or message.text == "⏹ Reset" or message.text == "0":
-            st.notification_time = datetime.now().time().replace(hour=0,minute=0,second=0,microsecond=0)
+        elif (
+            message.text == "⏹ Сбросить"
+            or message.text == "⏹ Скинути"
+            or message.text == "⏹ Reset"
+            or message.text == "0"
+        ):
+            st.notification_time = (
+                datetime.now().time().replace(hour=0, minute=0, second=0, microsecond=0)
+            )
             db.session.commit()
             main_menu(message)
             return
@@ -720,19 +893,22 @@ def process_notification_step(message):
             st.active = True
             db.session.commit()
         if message.from_user.language_code == "uk":
-            bot.reply_to(message, 'Час обраний')
+            bot.reply_to(message, "Час обраний")
         elif message.from_user.language_code == "ru":
-            bot.reply_to(message, 'Время выбрано')
+            bot.reply_to(message, "Время выбрано")
         else:
-            bot.reply_to(message, 'Time selected')
+            bot.reply_to(message, "Time selected")
     except Exception as e:
         print(traceback.format_exc())
-        bot.reply_to(message, 'oooops')
+        bot.reply_to(message, "oooops")
 
 
 def notifi_change(message):
     markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
-    if message.from_user.language_code == "uk" or message.from_user.language_code == "ru":
+    if (
+        message.from_user.language_code == "uk"
+        or message.from_user.language_code == "ru"
+    ):
         itemb = telebot.types.KeyboardButton("◀️Назад")
     else:
         itemb = telebot.types.KeyboardButton("◀ Back")
@@ -760,34 +936,64 @@ def notifi_change(message):
     item15 = telebot.types.KeyboardButton("21:00")
     item16 = telebot.types.KeyboardButton("22:00")
     item17 = telebot.types.KeyboardButton("23:00")
-    markup.add(itemb,itemr, item0, item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11, item12,
-               item13, item14, item15, item16, item17)
+    markup.add(
+        itemb,
+        itemr,
+        item0,
+        item1,
+        item2,
+        item3,
+        item4,
+        item5,
+        item6,
+        item7,
+        item8,
+        item9,
+        item10,
+        item11,
+        item12,
+        item13,
+        item14,
+        item15,
+        item16,
+        item17,
+    )
     if message.from_user.language_code == "uk":
-        bot.send_message(chat_id=message.chat.id,
-                         text='Обери час коли ти хочешь отримувати розклад, ' + message.from_user.first_name,
-                         reply_markup=markup)
+        bot.send_message(
+            chat_id=message.chat.id,
+            text="Обери час коли ти хочешь отримувати розклад, "
+            + message.from_user.first_name,
+            reply_markup=markup,
+        )
     elif message.from_user.language_code == "ru":
-        bot.send_message(chat_id=message.chat.id,
-                         text='Выбери время когда ты хочешь получать расписание, ' + message.from_user.first_name,
-                         reply_markup=markup)
+        bot.send_message(
+            chat_id=message.chat.id,
+            text="Выбери время когда ты хочешь получать расписание, "
+            + message.from_user.first_name,
+            reply_markup=markup,
+        )
     else:
-        bot.send_message(chat_id=message.chat.id,
-                         text='Choose time for notification ' + message.from_user.first_name,
-                         reply_markup=markup)
+        bot.send_message(
+            chat_id=message.chat.id,
+            text="Choose time for notification " + message.from_user.first_name,
+            reply_markup=markup,
+        )
     bot.register_next_step_handler(message, process_notification_step)
 
 
 def reset(message):
     st = Student.query.filter_by(tid=message.from_user.id).first()
-    st.notification_time = datetime.now().time().replace(hour=0,minute=0,second=0,microsecond=0)
+    st.notification_time = (
+        datetime.now().time().replace(hour=0, minute=0, second=0, microsecond=0)
+    )
     db.session.commit()
     if message.from_user.language_code == "uk":
-        text = 'Час успішно скинуто'
+        text = "Час успішно скинуто"
     elif message.from_user.language_code == "ru":
-        text = 'Время успешно сброшено'
+        text = "Время успешно сброшено"
     else:
-        text = 'Success'
-    bot.send_message(st.cid, f'{text}')
+        text = "Success"
+    bot.send_message(st.cid, f"{text}")
 
 
 @app.route("/")
@@ -797,16 +1003,16 @@ def webhook():
     print(db)
     try:
         bot.remove_webhook()
-        bot.set_webhook(url=f'{host}' + TOKEN,certificate=open(WEBHOOK_SSL_CERT, 'r'))
+        bot.set_webhook(url=f"{host}" + TOKEN, certificate=open(WEBHOOK_SSL_CERT, "r"))
     except:
         print(traceback.format_exc())
     return "!", 200
 
 
-@app.route('/' + str(TOKEN), methods=['POST'])
+@app.route("/" + str(TOKEN), methods=["POST"])
 def getMessage():
-    if flask.request.headers.get('content-type') == 'application/json':
-        json_string = request.get_data().decode('utf-8')
+    if flask.request.headers.get("content-type") == "application/json":
+        json_string = request.get_data().decode("utf-8")
         update = telebot.types.Update.de_json(json_string)
         bot.process_new_updates([update])
         return "!", 200
@@ -814,16 +1020,16 @@ def getMessage():
         flask.abort(403)
 
 
-
-
 @app.route("/sync")
 def sync():
-    req = requests.get(url='http://schedule.in.ua:3200/groups',
-                       headers={'X-Institution': 'vische-profesiine-uchilische-7'})
+    req = requests.get(
+        url="http://schedule.in.ua:3200/groups",
+        headers={"X-Institution": "vische-profesiine-uchilische-7"},
+    )
     res = req.json()
 
     for r in res:
-        group, create = get_or_create(db.session, Group, uid=r['_id'], name=r['name'])
+        group, create = get_or_create(db.session, Group, uid=r["_id"], name=r["name"])
 
     dt = datetime.today()
     if dt.isoweekday() == 7:
@@ -831,50 +1037,65 @@ def sync():
         db.session.commit()
         mnd = dt + timedelta(days=1)
         monday = (dt + timedelta(days=1)).strftime("%Y-%m-%d")
-        sunday = (mnd + timedelta(days=5)).strftime("%Y-%m-%d")
+        saturday = (mnd + timedelta(days=5)).strftime("%Y-%m-%d")
     else:
         mnd = dt - timedelta(days=dt.weekday())
         monday = (dt - timedelta(days=dt.weekday())).strftime("%Y-%m-%d")
-        sunday = (mnd + timedelta(days=5)).strftime("%Y-%m-%d")
+        saturday = (mnd + timedelta(days=5)).strftime("%Y-%m-%d")
 
     groups = Group.query.filter_by()
 
     for g in groups:
         data = {
-            'from': f'{monday}T10:00:00.000Z',
-            'group': f'{g.uid}',
-            'to': f'{sunday}T10:00:00.000Z'
+            "from": f"{monday}T10:00:00.000Z",
+            "group": f"{g.uid}",
+            "to": f"{saturday}T10:00:00.000Z",
         }
-        print(f'497 {data}')
+        print(f"497 {data}")
         nd = orjson.dumps(data)
 
-        req3 = http.request(method='POST', url='http://schedule.in.ua:3200/lessons/query', body=nd,
-                            headers={'X-Institution': 'vische-profesiine-uchilische-7','Content-Type': 'application/json'})
+        req3 = http.request(
+            method="POST",
+            url="http://schedule.in.ua:3200/lessons/query",
+            body=nd,
+            headers={
+                "X-Institution": "vische-profesiine-uchilische-7",
+                "Content-Type": "application/json",
+            },
+        )
         res3 = orjson.loads(req3.data)
         print(g.name)
         print(len(res3))
         for d in res3:
-            parseddate = datetime.strptime(d['date'], '%Y-%m-%dT%H:%M:%S.%fZ')
+            parseddate = datetime.strptime(d["date"], "%Y-%m-%dT%H:%M:%S.%fZ")
             # print(f'506 {parseddate}')
-            if d['room'] and d['room']['name']:
-                room = d['room']['name']
+            if d["room"] and d["room"]["name"]:
+                room = d["room"]["name"]
             else:
                 room = None
-            if d['teacher'] and d['teacher']['name']:
-                teacher = d['teacher']['name']
+            if d["teacher"] and d["teacher"]["name"]:
+                teacher = d["teacher"]["name"]
             else:
                 teacher = None
-            lessons, create = get_or_create(db.session, Lessons, room=room, subject=d['subject']['name'],
-                                            teacher=teacher, date=parseddate, group=d['group']['name'],
-                                            order=d['order'])
-    result = {'sync': 'ok'}
+            lessons, create = get_or_create(
+                db.session,
+                Lessons,
+                room=room,
+                subject=d["subject"]["name"],
+                teacher=teacher,
+                date=parseddate,
+                group=d["group"]["name"],
+                order=d["order"],
+            )
+    result = {"sync": "ok"}
     return result, 200
 
 
 def main_menu(message):
     markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
     if message.from_user.language_code == "uk":
-        item1 = telebot.types.KeyboardButton("Розклад на сьогодні")
+        i1 = "Розклад на сьогодні"
+        item1 = telebot.types.KeyboardButton(i1)
         item2 = telebot.types.KeyboardButton("Розклад на завтра")
         item3 = telebot.types.KeyboardButton("Розклад на три дні")
         item4 = telebot.types.KeyboardButton("Розклад на тиждень")
@@ -883,9 +1104,13 @@ def main_menu(message):
         item7 = telebot.types.KeyboardButton("Моя група")
         item8 = telebot.types.KeyboardButton("Як користуватися ботом")
         item9 = telebot.types.KeyboardButton("Змiнити час отримання розкладу")
-        main_text = 'Головне меню'
-        markup.add(item1, item2, item3, item4, item5, item6, item7, item8,item9)
-        bot.send_message(chat_id=message.chat.id, text='Привiт, ' + message.from_user.first_name, reply_markup=markup)
+        main_text = "Головне меню"
+        markup.add(item1, item2, item3, item4, item5, item6, item7, item8, item9)
+        bot.send_message(
+            chat_id=message.chat.id,
+            text="Привiт, " + message.from_user.first_name,
+            reply_markup=markup,
+        )
     elif message.from_user.language_code == "ru":
         item1 = telebot.types.KeyboardButton("Расписание на сегодня")
         item2 = telebot.types.KeyboardButton("Расписание на завтра")
@@ -896,9 +1121,13 @@ def main_menu(message):
         item7 = telebot.types.KeyboardButton("Моя группа")
         item8 = telebot.types.KeyboardButton("Как пользоваться ботом")
         item9 = telebot.types.KeyboardButton("Изменить время получения расписания")
-        main_text = 'Главное меню'
-        markup.add(item1, item2, item3, item4, item5, item6, item7, item8,item9)
-        bot.send_message(chat_id=message.chat.id, text='Привет, ' + message.from_user.first_name, reply_markup=markup)
+        main_text = "Главное меню"
+        markup.add(item1, item2, item3, item4, item5, item6, item7, item8, item9)
+        bot.send_message(
+            chat_id=message.chat.id,
+            text="Привет, " + message.from_user.first_name,
+            reply_markup=markup,
+        )
     else:
         item1 = telebot.types.KeyboardButton("Schedule for today")
         item2 = telebot.types.KeyboardButton("Schedule for tomorrow")
@@ -909,9 +1138,9 @@ def main_menu(message):
         item7 = telebot.types.KeyboardButton("My group")
         item8 = telebot.types.KeyboardButton("How to use a bot")
         item9 = telebot.types.KeyboardButton("Change schedule notification")
-        main_text = 'Main menu'
-        markup.add(item1, item2, item3, item4, item5, item6, item7, item8,item9)
-    bot.send_message(chat_id=message.chat.id, text=f'{main_text}', reply_markup=markup)
+        main_text = "Main menu"
+        markup.add(item1, item2, item3, item4, item5, item6, item7, item8, item9)
+    bot.send_message(chat_id=message.chat.id, text=f"{main_text}", reply_markup=markup)
     return
 
 
@@ -935,7 +1164,10 @@ def get_or_create(session, model, defaults=None, **kwargs):
 
 
 def test_job():
-    st = Student.query.filter_by(notification_time=datetime.now(ua_time).time().replace(second=0, microsecond=0),active=True).all()
+    st = Student.query.filter_by(
+        notification_time=datetime.now(ua_time).time().replace(second=0, microsecond=0),
+        active=True,
+    ).all()
     print(st)
     if datetime.now(ua_time).time().hour > 16:
         dt = datetime.now(ua_time) + timedelta(days=1)
@@ -945,7 +1177,9 @@ def test_job():
     print(dt)
     for s in st:
         less = []
-        lessons = Lessons.query.filter_by(group=s.group.name, date=dt.replace(tzinfo=None)).order_by(Lessons.order)
+        lessons = Lessons.query.filter_by(
+            group=s.group.name, date=dt.replace(tzinfo=None)
+        ).order_by(Lessons.order)
         if lessons.first() is None:
             pass
             # text = f'{dt.strftime("%d.%m.%Y")}\nПар нет'
@@ -953,9 +1187,9 @@ def test_job():
         else:
             less = aggregatio(lessons, less, dt)
         try:
-            bot.send_message(chat_id=s.cid, text='\n\n'.join(less))
+            bot.send_message(chat_id=s.cid, text="\n\n".join(less))
         except telebot.apihelper.ApiTelegramException:
-            print(f'user {s.id} blocked bot')
+            print(f"user {s.id} blocked bot")
             s.active = False
             db.session.commit()
 
@@ -964,24 +1198,32 @@ scheduler = BackgroundScheduler()
 # # job = scheduler.add_job(test_job, 'cron', day_of_week ='mon-sun', hour=16, minute=00)
 # # cron = '0,15,30,45 0-23 * * 1-6'
 # # cron = '0,15,30,45 6-23 * * 1-6'
-job = scheduler.add_job(test_job, CronTrigger(day_of_week='mon-sun', hour='6-23', minute='0,15,30,45', timezone='Europe/Kiev'))
-job2 = scheduler.add_job(sync, CronTrigger(day_of_week='sun', hour='8', minute='30', timezone='Europe/Kiev'))
+job = scheduler.add_job(
+    test_job,
+    CronTrigger(
+        day_of_week="mon-sun", hour="6-23", minute="0,15,30,45", timezone="Europe/Kiev"
+    ),
+)
+job2 = scheduler.add_job(
+    sync, CronTrigger(day_of_week="sun", hour="8", minute="30", timezone="Europe/Kiev")
+)
 scheduler.print_jobs()
 scheduler.start()
 
 
 def roundTime(dt=None, roundTo=60):
-   """Round a datetime object to any time lapse in seconds
-   dt : datetime object, default now.
-   roundTo : Closest number of seconds to round to, default 1 minute.
-   Author: Thierry Husson 2012 - Use it as you want but don't blame me.
-   """
-   if dt == None : dt = datetime.now()
-   seconds = (dt.replace(tzinfo=None) - dt.min).seconds
-   rounding = (seconds+roundTo/2) // roundTo * roundTo
-   return dt + timedelta(0,rounding-seconds,-dt.microsecond)
+    """Round a datetime object to any time lapse in seconds
+    dt : datetime object, default now.
+    roundTo : Closest number of seconds to round to, default 1 minute.
+    Author: Thierry Husson 2012 - Use it as you want but don't blame me.
+    """
+    if dt == None:
+        dt = datetime.now()
+    seconds = (dt.replace(tzinfo=None) - dt.min).seconds
+    rounding = (seconds + roundTo / 2) // roundTo * roundTo
+    return dt + timedelta(0, rounding - seconds, -dt.microsecond)
 
 
-@app.route('/')
+@app.route("/")
 def hello_world():
-    return 'Hello World!'
+    return "Hello World!"
